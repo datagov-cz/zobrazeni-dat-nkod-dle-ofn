@@ -1,0 +1,23 @@
+[
+  {
+    "title": "externí aplikace 2",
+    "description": "popis externi aplikace",
+    "iris": ["<https://ofn.gov.cz/turistické-cíle/2020-07-01/>", "<https://ofn.gov.cz/sportoviště/2020-07-01/>"],
+    "url": "https://secondapp.com",
+    "paramsformat": "where=${0}&iri=${1}&name=${2}"
+  },
+  {
+    "title": "externí aplikace 3",
+    "description": "popis externi aplikace",
+    "iris": ["<https://ofn.gov.cz/turistické-cíle/2020-07-01/>"],
+    "url": "https://thirdapp.com",
+    "paramsformat": "where=${0}&iri=${1}"
+  },
+  {
+    "title": "externí aplikace 4",
+    "description": "popis externi aplikace",
+    "iris": ["<https://ofn.gov.cz/sportoviště/2020-07-01/>"],
+    "url": "https://fourthapp.com",
+    "paramsformat": "kde=${0}&zdroj=${1}"
+  }
+]
