@@ -1,7 +1,7 @@
 import SparqlClient from "sparql-http-client";
 
 /**
- * Interface to read the config file
+ * Typ pro Aplikaci
  */
 export type Application = {
     url: string,
@@ -11,14 +11,14 @@ export type Application = {
 }
 
 /**
- * The endpoint structure for config and SELECT dropdown
+ * Typ pro koncový bod, využit v konfiguraci a při výběru koncového bodu v uživatelském rozhraní
  */
 export type Endpoint = {
     title: string,
     url: string
 }
 /**
- * Object types for SELECT dropdown with predefined IRIs
+ * Typ pro typ objektu, využit v konfiguraci a při výběru typu v uživatelském rozhraní
  */
 export type ObjectType = {
     title: string;
@@ -26,7 +26,7 @@ export type ObjectType = {
     applications: Application[]
 }
 /**
- * Config object
+ * Typ pro konfiguraci
  */
 export type Config = {
     endpoints: Endpoint[],
@@ -34,6 +34,9 @@ export type Config = {
     applications?: Application[]
 }
 
+/**
+ * Typ pro formát externího souboru s popisem aplikací a jejich dovedností
+ */
 export type AppConf = {
     title: string,
     iris: string[],
@@ -44,12 +47,12 @@ export type AppConf = {
 
 
 /**
- * Function transforms HTTP sream API into a Promise. This is the hearth of the app.
- * @param endpoint SPARQL endpoint to query
- * @param query the SPARQL query
- * @param headless if true return flat structure [][] with only values,
- * it also return array of rows represented as objects with keys ~ colunm names and respective values
- * @param userRenderValueFn value renderer - allows programmer to use own value renderer in case of headless output
+ * Základní fokce pro zpravocvání
+ * @param endpoint koncový bod SPARQL pro dotazy
+ * @param query vlastní SPARQL dotaz
+ * @param headless TRUE -zda se má výsledek transformovat do ploché struktury pole polí [][],
+ * FALSE - zda mají být vráceny originální objekty s výsledkem
+ * @param userRenderValueFn volitelný parametr funkce, která vykresuje/upravuje výslednou hodnotu každé hodnoty v řádku
  */
 export function loadFromSPARQL(endpoint: string,
                                query: string,
@@ -58,12 +61,12 @@ export function loadFromSPARQL(endpoint: string,
     // tslint:disable-next-line:no-console
     console.info("loading data from ", endpoint, query)
 
-    // use default renderer if not user-defined
+    // výchozí vykreslovač protstě použije výchozí hodnoty
     let renderValueFn = (row, key) => row[key].value;
     if (userRenderValueFn) renderValueFn = userRenderValueFn;
 
     return new Promise<any[]>((resolve, reject) => {
-        // one-liner - create the client and wrap streams with a Promise
+        // obaluje volání SparqlClient do Promise - moderní přístup v TypeScriptu
         new SparqlClient({endpointUrl: endpoint}).query.select(query).then(stream => {
             const accumulator: any[] = []
 
@@ -91,14 +94,15 @@ export function loadFromSPARQL(endpoint: string,
 
 }
 
-// combines current type (from configuration and select) with link, if apps exist in config
+// připraví odkaz na aplikaci z poskytnutého linku
 export function appsForIRI(link: string, currentType: ObjectType): string[] {
     return currentType.applications ?
         currentType.applications.map(application => formatAppURL(application, link, currentType)) :
         [];
 }
 
-// utility function - format given string as link to given app
+// pomocná funkce, která naformátuje parametry do URL
+//TODO zdokkumentovat do readme.md
 function formatAppURL(application: Application, link: string, currentType: ObjectType) {
     return link2html(application.url + "/?" + encodeURIComponent(
         application.paramsformat
@@ -107,13 +111,13 @@ function formatAppURL(application: Application, link: string, currentType: Objec
             .replace("${2}", "Data ze zdroje dle OFN - " + currentType.title)), application);
 }
 
-// utility function - how the link is formatted
+// vykreslí HTML část kódu
 function link2html(formatedLink: string, application: Application) {
     return `<a href="${formatedLink}" title="${application.description}">${application.title}</a>`;
 }
 
 /**
- * merges external app config into Config object
+ * Pripojí externí soubor s popisem aplikací a jejich schopností do konfiguračního souboru
  * @param appConf
  * @param conf
  */

@@ -19,7 +19,7 @@ dcat:downloadURL ?link .
 `
 }
 
-// global states of application - might be easily converted into a class in more difficult application
+// Globální stav aplikace - může být i jako třída
 const currentEndpoint: Endpoint = config.endpoints[0];
 let currentType: any = config.types[0];
 let theTable: DataTables.Api;
@@ -63,8 +63,9 @@ async function loadTable(): Promise<void> {
 }
 
 /**
- * function read provided links and calls multiple XHRs simultaneously to fill in the data
- * @param data
+ * Funkce transformuje data z polepolí ze SPARQL do rozvinuté formy - připraví typy Promise,
+ * které se paralelně vyhodnocují a povyhodnocení všech výsledek vrátí
+ * @param data vstupní data
  */
 async function convertData(data: any[]): Promise<any> {
     const promises: Promise<string[]>[] = []
@@ -98,7 +99,8 @@ async function convertData(data: any[]): Promise<any> {
 }
 
 /**
- * function loads additional URL from the page parameter "url" and directly uses that if "url" parametr is present
+ * načte volitelnou část URL, ze které vezme obsah parametru "typ" a použije jej jako první položky výběru.
+ * Pokud je parametr "typ" nalezen, tak je obsah využit ihned
  */
 function loadOptionalURLtype() {
     const type = new URLSearchParams(window.location.search).get('typ');
@@ -113,7 +115,7 @@ function proxy(url: string): string {
 }
 
 /**
- * create Types select and label
+ * vyrobí a vloží do HTML stránky SELECT s výběrem typu
  * @param id
  * @param types
  */

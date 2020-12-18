@@ -10,31 +10,29 @@ function getQuery(iri: string): string {
 PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX dcat: <http://www.w3.org/ns/dcat#>
 PREFIX l-sgov-sbírka-111-2009-pojem: <https://slovník.gov.cz/legislativní/sbírka/111/2009/pojem/>
-SELECT  ?title ?description ?publisher_name ?download_link
+SELECT  ?název ?popis ?vydavatel ?zdroj
 WHERE {
 
     ?s a dcat:Dataset ;
-        dcat:distribution ?distribution ;
-
+        dcat:distribution ?distribuce ;
         dcterms:conformsTo ${iri} ;
+        dcterms:title ?název ;
+        dcterms:description ?popis;
+        dcterms:publisher ?vydavatel_iri .
 
-        dcterms:title ?title ;
-        dcterms:description ?description;
-        dcterms:publisher ?publisher_iri .
-
-    ?distribution a dcat:Distribution ;
+    ?distribuce a dcat:Distribution ;
         dcterms:format <http://publications.europa.eu/resource/authority/file-type/JSON_LD> ;
-        dcat:downloadURL ?download_link .
+        dcat:downloadURL ?zdroj .
 
     SERVICE <https://rpp-opendata.egon.gov.cz/odrpp/sparql/> {
-      ?publisher_iri l-sgov-sbírka-111-2009-pojem:má-název-orgánu-veřejné-moci ?publisher_name
+      ?vydavatel_iri l-sgov-sbírka-111-2009-pojem:má-název-orgánu-veřejné-moci ?vydavatel
     }
 }
 `
 }
 
 
-// global states of application - might be easily converted into a class in more difficult application
+// Proměnné globálního stavu aplikace. Snadno lze předělat na třídu
 let currentEndpoint: Endpoint = config.endpoints[0];
 let currentType: any = config.types[0];
 let table: DataTables.Api;
@@ -52,7 +50,10 @@ const dataTableOptions = {
     ]
 };
 
-// run the app with jQuery, the top function function is asynchronous to not block user actions or other scripts
+/** aplikace se spouštítouto funkcí a všechny části, které mohou zdržet uživatle, beží asynchronně, využívá návrhového
+ * vzoru s klíčovými slovy async/await {@link https://en.wikipedia.org/wiki/Async/await}
+ *
+ */
 export async function browserApp() {
     const newConfig = mergeAppConfToConf(appConfig as any, config as any)
     // tslint:disable-next-line:no-console
@@ -85,7 +86,8 @@ async function loadTable(): Promise<void> {
 }
 
 /**
- * function loads additional URL from the page parameter "url" and directly uses that if "url" parametr is present
+ * Funkce načte dodatečné URL z parametru stránky "url", pokud je přítomen, a ihned jej použije jako
+ * koncový bod pro dotazování
  */
 function loadOptionalURLendpoint() {
     const url = new URLSearchParams(window.location.search).get('url');
@@ -96,14 +98,15 @@ function loadOptionalURLendpoint() {
 }
 
 /**
- * Value renderer is a callback implementation, that picks "download_link" column and replaces with
- * proper 3rd party aplication liks according to configuration
- * @param row
- * @param key
+ * Value renderer je transformační funkce, která dovoluje programátorovi nechat vypsat hodnoty vrácené
+ * jako odpověď na dotaz v jiné formě, provést transformaci.
+ * @param row z jakého řádku jodpovědi je klíč/hodnota
+ * @param key klíš k hodnotě
  */
-function valueRenderer(row, key) {
+// TODO funkce by měla vracet string, HTML string, nebo něco pro DataTable
+function valueRenderer(row, key): any {
     const keyName = "download_link"
-    // with the switch I assume that there will be more types of values to be rendered differently..
+    // použití switch je v tomto místě zbytné, nicméně nabízí snadnou rozšiřitelnost do budoucna
     switch (key) {
         case keyName: {
             return appsForIRI(row[keyName].value, currentType)
@@ -116,7 +119,7 @@ function valueRenderer(row, key) {
 
 
 /**
- * create Endpoint select and label
+ * vytvoří select pro změnu koncového bodu pro dotazy
  * @param id
  * @param endpoints
  */
@@ -137,7 +140,7 @@ function createSelectEndpoint(id: string, endpoints: Endpoint[]): void {
 }
 
 /**
- * create Types select and label
+ * vytvoří SELECT pro výběr typu dat
  * @param id
  * @param types
  */
