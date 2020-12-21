@@ -20,8 +20,8 @@ dcat:downloadURL ?link .
 }
 
 // Globální stav aplikace - může být i jako třída
-const currentEndpoint: Endpoint = config.endpoints[0];
-let currentType: any = config.types[0];
+const currentEndpoint: Endpoint = config.koncove_body[0];
+let currentType: ObjectType = config.typy_objektu[0];
 let theTable: DataTables.Api;
 
 const tableOptions = {
@@ -43,7 +43,7 @@ export function demoApp(id: string, tableId: string) {
 
     const $demo = $("#demo");
     if ($demo.length) {
-        createSelectType("demo", config.types as any);
+        createSelectType("demo", config.typy_objektu);
         $demo.append($("<table>").attr("id", tableId));
         $demo.append($("<div>").attr("id", id));
         theTable = $('#' + tableId).DataTable(tableOptions);
@@ -105,8 +105,8 @@ async function convertData(data: any[]): Promise<any> {
 function loadOptionalURLtype() {
     const type = new URLSearchParams(window.location.search).get('typ');
     if (type != null) {
-        config.types.unshift({title: "z parametru typ: " + String(type), iri: String(type)});
-        currentType = config.types[0];
+        config.typy_objektu.unshift({název: "z parametru typ: " + String(type), iri: String(type)});
+        currentType = config.typy_objektu[0];
     }
 }
 
@@ -125,7 +125,7 @@ function createSelectType(id: string, types: ObjectType[]): void {
     appDiv.append($("<label>").attr("for", `${id}_type_selector`).text("Typ dat"))
     const select = $("<select>").attr('for', `${id}_type_selector`);
     types.forEach(item => {
-        select.append($("<option>").attr('value', item.iri).text(item.title));
+        select.append($("<option>").attr('value', item.iri).text(item.název));
     })
     appDiv.append(select);
     select.on("change", function (this: any) {

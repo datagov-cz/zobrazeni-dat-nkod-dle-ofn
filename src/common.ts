@@ -1,48 +1,39 @@
 import SparqlClient from "sparql-http-client";
 
-/**
- * Typ pro Aplikaci
- */
-export type Application = {
-    url: string,
-    paramsformat: string,
-    title: string,
-    description: string
-}
 
 /**
  * Typ pro koncový bod, využit v konfiguraci a při výběru koncového bodu v uživatelském rozhraní
  */
 export type Endpoint = {
-    title: string,
+    název: string,
     url: string
 }
 /**
  * Typ pro typ objektu, využit v konfiguraci a při výběru typu v uživatelském rozhraní
  */
 export type ObjectType = {
-    title: string;
+    název: string;
     iri: string;
-    applications: Application[]
+    aplikace?: AppConf[]
 }
 /**
  * Typ pro konfiguraci
  */
 export type Config = {
-    endpoints: Endpoint[],
-    types: ObjectType[],
-    applications?: Application[]
+    koncove_body: Endpoint[],
+    typy_objektu: ObjectType[],
 }
+
 
 /**
  * Typ pro formát externího souboru s popisem aplikací a jejich dovedností
  */
 export type AppConf = {
-    title: string,
-    iris: string[],
-    url: string,
-    paramsformat: string,
-    description: string
+    "název": string,
+    "zpracovává": string[],
+    "url": string,
+    "formát_url": string,
+    "popis": string
 }
 
 
@@ -96,24 +87,24 @@ export function loadFromSPARQL(endpoint: string,
 
 // připraví odkaz na aplikaci z poskytnutého linku
 export function appsForIRI(link: string, currentType: ObjectType): string[] {
-    return currentType.applications ?
-        currentType.applications.map(application => formatAppURL(application, link, currentType)) :
+    return currentType.aplikace ?
+        currentType.aplikace.map(application => formatAppURL(application, link, currentType)) :
         [];
 }
 
 // pomocná funkce, která naformátuje parametry do URL
 //TODO zdokkumentovat do readme.md
-function formatAppURL(application: Application, link: string, currentType: ObjectType) {
+function formatAppURL(application: AppConf, link: string, currentType: ObjectType) {
     return link2html(application.url + "/?" + encodeURIComponent(
-        application.paramsformat
+        application.formát_url
             .replace("${0}", link)
             .replace("${1}", currentType.iri)
-            .replace("${2}", "Data ze zdroje dle OFN - " + currentType.title)), application);
+            .replace("${2}", "Data ze zdroje dle OFN - " + currentType.název)), application);
 }
 
 // vykreslí HTML část kódu
-function link2html(formatedLink: string, application: Application) {
-    return `<a href="${formatedLink}" title="${application.description}">${application.title}</a>`;
+function link2html(formatedLink: string, application: AppConf) {
+    return `<a href="${formatedLink}" title="${application.popis}">${application.název}</a>`;
 }
 
 /**
@@ -122,15 +113,10 @@ function link2html(formatedLink: string, application: Application) {
  * @param conf
  */
 export function mergeAppConfToConf(appConf: AppConf[], conf: Config): Config {
-    conf.types.forEach(type => {
-        appConf.filter(item => item.iris.indexOf(type.iri) !== -1).forEach(app => {
-            if (!type.applications) type.applications = []
-            type.applications.push({
-                title: app.title,
-                description: app.description,
-                paramsformat: app.paramsformat,
-                url: app.url
-            })
+    conf.typy_objektu.forEach(type => {
+        appConf.filter(item => item.zpracovává.indexOf(type.iri) !== -1).forEach(app => {
+            if (!type.aplikace) type.aplikace = []
+            type.aplikace.push(app)
         })
     })
     return conf;

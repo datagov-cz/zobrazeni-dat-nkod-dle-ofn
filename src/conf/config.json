@@ -1,48 +1,35 @@
 {
-  "endpoints": [
+  "koncove_body": [
     {
-      "title": "https://oha03.mvcr.gov.cz/sparql",
+      "název": "https://oha03.mvcr.gov.cz/sparql",
       "url": "https://oha03.mvcr.gov.cz/sparql"
     },
     {
-      "title": "https://data.gov.cz/sparkl",
+      "název": "https://data.gov.cz/sparkl",
       "url": "https://data.gov.cz/sparkl"
     }
   ],
-  "types": [
+  "typy_objektu": [
     {
-      "title": "Turistické cíle",
+      "název": "Turistické cíle",
       "iri": "<https://ofn.gov.cz/turistické-cíle/2020-07-01/>",
-      "applications": [
-        {
-          "title": "Název první aplikace",
-          "description": "Popis první aplikace",
-          "url": "https://someapp.com",
-          "paramsformat": "param1=${0}&param2=${1}"
-        },
-        {
-          "title": "Název druhé aplikace",
-          "description": "Popis druhé aplikace",
-          "url": "https://someanotherapp.com",
-          "paramsformat": "where=${0}&iri=${1}&name=${2}"
-        }
-      ]
+      "aplikace": []
     },
     {
-      "title": "Sportoviště",
+      "název": "Sportoviště",
       "iri": "<https://ofn.gov.cz/sportoviště/2020-07-01/>",
-      "applications": []
+      "aplikace": []
     },
     {
-      "title": "Aktuality",
+      "název": "Aktuality",
       "iri": "<https://ofn.gov.cz/aktuality/2020-07-01/>"
     },
     {
-      "title": "Události",
+      "název": "Události",
       "iri": "<https://ofn.gov.cz/události/2020-07-01/>"
     },
     {
-      "title": "Registr práv a povinností",
+      "název": "Registr práv a povinností",
       "iri": "<https://ofn.gov.cz/registr-práv-a-povinností/>"
     }
   ]

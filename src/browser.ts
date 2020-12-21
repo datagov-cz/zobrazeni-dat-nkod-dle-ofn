@@ -33,8 +33,8 @@ WHERE {
 
 
 // Proměnné globálního stavu aplikace. Snadno lze předělat na třídu
-let currentEndpoint: Endpoint = config.endpoints[0];
-let currentType: any = config.types[0];
+let currentEndpoint: Endpoint = config.koncove_body[0];
+let currentType: ObjectType = config.typy_objektu[0];
 let table: DataTables.Api;
 
 const dataTableOptions = {
@@ -55,7 +55,7 @@ const dataTableOptions = {
  *
  */
 export async function browserApp() {
-    const newConfig = mergeAppConfToConf(appConfig as any, config as any)
+    const newConfig = mergeAppConfToConf(appConfig, config)
     // tslint:disable-next-line:no-console
     console.info("Using enhanced config:", config);
 
@@ -64,8 +64,8 @@ export async function browserApp() {
 
     const $browser = $("#browser");
     if ($browser.length) {
-        createSelectEndpoint("browser", newConfig.endpoints);
-        createSelectType("browser", newConfig.types as any);
+        createSelectEndpoint("browser", newConfig.koncove_body);
+        createSelectType("browser", newConfig.typy_objektu as any);
 
         // create <table> and convert into DataTable
         const $table = $("<table>");
@@ -92,8 +92,8 @@ async function loadTable(): Promise<void> {
 function loadOptionalURLendpoint() {
     const url = new URLSearchParams(window.location.search).get('url');
     if (url != null) {
-        config.endpoints.unshift({title: "z parametru url: " + String(url), url: String(url)});
-        currentEndpoint = config.endpoints[0];
+        config.koncove_body.unshift({název: "z parametru url: " + String(url), url: String(url)});
+        currentEndpoint = config.koncove_body[0];
     }
 }
 
@@ -105,7 +105,7 @@ function loadOptionalURLendpoint() {
  */
 // TODO funkce by měla vracet string, HTML string, nebo něco pro DataTable
 function valueRenderer(row, key): any {
-    const keyName = "download_link"
+    const keyName = "zdroj"
     // použití switch je v tomto místě zbytné, nicméně nabízí snadnou rozšiřitelnost do budoucna
     switch (key) {
         case keyName: {
@@ -128,7 +128,7 @@ function createSelectEndpoint(id: string, endpoints: Endpoint[]): void {
     appDiv.append($("<label>").attr("for", `${id}_catalog_selector`).text("Katalog"))
     const select = $("<select>").attr('for', `${id}_catalog_selector`);
     endpoints.forEach(item => {
-        select.append($("<option>").attr('value', item.url).text(item.title));
+        select.append($("<option>").attr('value', item.url).text(item.název));
     })
     appDiv.append(select);
     select.on("change", function (this: any) {
@@ -150,7 +150,7 @@ function createSelectType(id: string, types: ObjectType[]): void {
     appDiv.append($("<label>").attr("for", `${id}_type_selector`).text("Typ dat"))
     const select = $("<select>").attr('for', `${id}_type_selector`);
     types.forEach(item => {
-        select.append($("<option>").attr('value', item.iri).text(item.title));
+        select.append($("<option>").attr('value', item.iri).text(item.název));
     })
     appDiv.append(select);
     select.on("change", function (this: any) {
