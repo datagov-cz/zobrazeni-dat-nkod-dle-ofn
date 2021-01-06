@@ -45,7 +45,7 @@ export type ExternalApp = {
  * FALSE - zda mají být vráceny originální objekty s výsledkem
  * @param userRenderValueFn volitelný parametr funkce, která vykresuje/upravuje výslednou hodnotu každé hodnoty v řádku
  */
-export function loadFromSPARQL(endpoint: string,
+export async function loadFromSPARQL(endpoint: string,
                                query: string,
                                headless = false,
                                userRenderValueFn?: (row, key) => (string)): Promise<any[]> {
