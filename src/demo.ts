@@ -1,7 +1,7 @@
 import $ from "jquery";
 import 'datatables.net-bs4';
 import config from "./conf/config.json";
-import {appsForIRI, Endpoint, loadFromSPARQL, mergeAppConfToConf, ObjectType} from "./common";
+import {appsForIRI, Endpoint, loadFromSPARQL, addExternalAppsToConfiguration, ObjectType} from "./common";
 import appConfig from "./conf/applications.json";
 
 function getQuery(iri: string): string {
@@ -34,16 +34,16 @@ const tableOptions = {
 
 
 export function demoApp(id: string, tableId: string) {
-    const newConfig = mergeAppConfToConf(appConfig as any, config as any)
+    const newConfig = addExternalAppsToConfiguration(appConfig, config);
     // tslint:disable-next-line:no-console
-    console.info("Using enhanced config:", config);
+    console.info("Using enhanced config:", newConfig);
 
 
     loadOptionalURLtype()
 
     const $demo = $("#demo");
     if ($demo.length) {
-        createSelectType("demo", config.typy_objektu);
+        createSelectType("demo", newConfig.typy_objektu);
         $demo.append($("<table>").attr("id", tableId));
         $demo.append($("<div>").attr("id", id));
         theTable = $('#' + tableId).DataTable(tableOptions);

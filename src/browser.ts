@@ -2,7 +2,7 @@ import $ from "jquery";
 import 'datatables.net-bs4';
 import config from "./conf/config.json";
 import appConfig from "./conf/applications.json";
-import {appsForIRI, Endpoint, loadFromSPARQL, mergeAppConfToConf, ObjectType} from "./common"
+import {appsForIRI, Endpoint, loadFromSPARQL, addExternalAppsToConfiguration, ObjectType} from "./common"
 
 
 function getQuery(iri: string): string {
@@ -55,9 +55,9 @@ const dataTableOptions = {
  *
  */
 export async function browserApp() {
-    const newConfig = mergeAppConfToConf(appConfig, config)
+    const newConfig = addExternalAppsToConfiguration(appConfig, config)
     // tslint:disable-next-line:no-console
-    console.info("Using enhanced config:", config);
+    console.info("Using enhanced config:", newConfig);
 
 
     loadOptionalURLendpoint();

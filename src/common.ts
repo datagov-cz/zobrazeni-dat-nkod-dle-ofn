@@ -14,12 +14,12 @@ export type Endpoint = {
 export type ObjectType = {
     název: string;
     iri: string;
-    aplikace?: AppConf[]
+    aplikace?: ExternalApps[]
 }
 /**
  * Typ pro konfiguraci
  */
-export type Config = {
+export type Configuration = {
     koncove_body: Endpoint[],
     typy_objektu: ObjectType[],
 }
@@ -28,7 +28,7 @@ export type Config = {
 /**
  * Typ pro formát externího souboru s popisem aplikací a jejich dovedností
  */
-export type AppConf = {
+export type ExternalApps = {
     "název": string,
     "zpracovává": string[],
     "url": string,
@@ -94,7 +94,7 @@ export function appsForIRI(link: string, currentType: ObjectType): string[] {
 
 // pomocná funkce, která naformátuje parametry do URL
 // TODO zdokkumentovat do readme.md
-function formatAppURL(application: AppConf, link: string, currentType: ObjectType) {
+function formatAppURL(application: ExternalApps, link: string, currentType: ObjectType) {
     return link2html(application.url + "/?" + encodeURIComponent(
         application.formát_url
             .replace("${0}", link)
@@ -103,7 +103,7 @@ function formatAppURL(application: AppConf, link: string, currentType: ObjectTyp
 }
 
 // vykreslí HTML část kódu
-function link2html(formatedLink: string, application: AppConf) {
+function link2html(formatedLink: string, application: ExternalApps) {
     return `<a href="${formatedLink}" title="${application.popis}">${application.název}</a>`;
 }
 
@@ -112,7 +112,7 @@ function link2html(formatedLink: string, application: AppConf) {
  * @param appConf
  * @param conf
  */
-export function mergeAppConfToConf(appConf: AppConf[], conf: Config): Config {
+export function addExternalAppsToConfiguration(appConf: ExternalApps[], conf: Configuration): Configuration {
     conf.typy_objektu.forEach(type => {
         appConf.filter(item => item.zpracovává.indexOf(type.iri) !== -1).forEach(app => {
             if (!type.aplikace) type.aplikace = []
