@@ -56,7 +56,6 @@ const dataTableOptions = {
  */
 export async function browserApp() {
     const newConfig = addExternalAppsToConfiguration(appConfig, config)
-    // tslint:disable-next-line:no-console
     console.info("Using enhanced config:", newConfig);
 
 
@@ -78,10 +77,7 @@ export async function browserApp() {
 
 async function loadTable(): Promise<void> {
     const data = await loadFromSPARQL(currentEndpoint.url, getQuery(currentType.iri), true, valueRenderer)
-
-    // tslint:disable-next-line:no-console
-    console.info("data loaded:", data);
-
+    console.info("SPARQL data loaded:", data);
     table.clear().rows.add(data).draw();
 }
 

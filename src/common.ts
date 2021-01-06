@@ -46,11 +46,10 @@ export type ExternalApp = {
  * @param userRenderValueFn volitelný parametr funkce, která vykresuje/upravuje výslednou hodnotu každé hodnoty v řádku
  */
 export async function loadFromSPARQL(endpoint: string,
-                               query: string,
-                               headless = false,
-                               userRenderValueFn?: (row, key) => (string)): Promise<any[]> {
-    // tslint:disable-next-line:no-console
-    console.info("loading data from ", endpoint, query)
+                                     query: string,
+                                     headless = false,
+                                     userRenderValueFn?: (row, key) => (string)): Promise<any[]> {
+    console.info("Starting loading data from ", endpoint, query)
 
     // výchozí vykreslovač protstě použije výchozí hodnoty
     let renderValueFn = (row, key) => row[key].value;
@@ -62,7 +61,6 @@ export async function loadFromSPARQL(endpoint: string,
             const accumulator: any[] = []
 
             stream.on('data', row => {
-                // console.log("adding row ", row)
                 if (headless) {
                     const item = Object.keys(row).map(key => renderValueFn(row, key));
                     accumulator.push(item)
@@ -72,7 +70,6 @@ export async function loadFromSPARQL(endpoint: string,
             })
 
             stream.on('end', () => {
-                // console.debug("finishing stream ", accumulator)
                 resolve(accumulator);
             })
 
