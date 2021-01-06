@@ -2,7 +2,7 @@ import $ from "jquery";
 import 'datatables.net-bs4';
 import config from "./conf/config.json";
 import appConfig from "./conf/applications.json";
-import {appsForIRI, Endpoint, loadFromSPARQL, addExternalAppsToConfiguration, ObjectType} from "./common"
+import {linksForAppsToHTML, Endpoint, loadFromSPARQL, addExternalAppsToConfiguration, ObjectType} from "./common"
 
 
 function getQuery(iri: string): string {
@@ -109,7 +109,7 @@ function valueRenderer(row, key): any {
     // použití switch je v tomto místě zbytné, nicméně nabízí snadnou rozšiřitelnost do budoucna
     switch (key) {
         case keyName: {
-            return appsForIRI(row[keyName].value, currentType)
+            return linksForAppsToHTML(row[keyName].value, currentType)
         }
         default: {
             return row[key].value;

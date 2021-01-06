@@ -1,7 +1,7 @@
 import $ from "jquery";
 import 'datatables.net-bs4';
 import config from "./conf/config.json";
-import {appsForIRI, Endpoint, loadFromSPARQL, addExternalAppsToConfiguration, ObjectType} from "./common";
+import {linksForAppsToHTML, Endpoint, loadFromSPARQL, addExternalAppsToConfiguration, ObjectType} from "./common";
 import appConfig from "./conf/applications.json";
 
 function getQuery(iri: string): string {
@@ -91,7 +91,7 @@ async function convertData(data: any[]): Promise<any> {
     }
 
     function formatRow(item, link) {
-        return [item.název.cs, item.typ, item.popis.cs, appsForIRI(link, currentType)]
+        return [item.název.cs, item.typ, item.popis.cs, linksForAppsToHTML(link, currentType)]
     }
 
     return Promise.all(data.map(row => getPromise(proxy(row.link.value))));

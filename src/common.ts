@@ -14,7 +14,7 @@ export type Endpoint = {
 export type ObjectType = {
     název: string;
     iri: string;
-    aplikace?: ExternalApps[]
+    aplikace?: ExternalApp[]
 }
 /**
  * Typ pro konfiguraci
@@ -28,7 +28,7 @@ export type Configuration = {
 /**
  * Typ pro formát externího souboru s popisem aplikací a jejich dovedností
  */
-export type ExternalApps = {
+export type ExternalApp = {
     "název": string,
     "zpracovává": string[],
     "url": string,
@@ -86,24 +86,24 @@ export function loadFromSPARQL(endpoint: string,
 }
 
 // připraví odkaz na aplikaci z poskytnutého linku
-export function appsForIRI(link: string, currentType: ObjectType): string[] {
+export function linksForAppsToHTML(link: string, currentType: ObjectType): string[] {
     return currentType.aplikace ?
-        currentType.aplikace.map(application => formatAppURL(application, link, currentType)) :
+        currentType.aplikace.map(application => appLinkToHTML(application, link, currentType)) :
         [];
 }
 
 // pomocná funkce, která naformátuje parametry do URL
 // TODO zdokkumentovat do readme.md
-function formatAppURL(application: ExternalApps, link: string, currentType: ObjectType) {
-    return link2html(application.url + "/?" + encodeURIComponent(
+function appLinkToHTML(application: ExternalApp, link: string, currentType: ObjectType) {
+    return linkToHTML(application, application.url + "/?" + encodeURIComponent(
         application.formát_url
             .replace("${0}", link)
             .replace("${1}", currentType.iri)
-            .replace("${2}", "Data ze zdroje dle OFN - " + currentType.název)), application);
+            .replace("${2}", "Data ze zdroje dle OFN - " + currentType.název)));
 }
 
 // vykreslí HTML část kódu
-function link2html(formatedLink: string, application: ExternalApps) {
+function linkToHTML(application: ExternalApp, formatedLink: string) {
     return `<a href="${formatedLink}" title="${application.popis}">${application.název}</a>`;
 }
 
@@ -112,7 +112,7 @@ function link2html(formatedLink: string, application: ExternalApps) {
  * @param appConf
  * @param conf
  */
-export function addExternalAppsToConfiguration(appConf: ExternalApps[], conf: Configuration): Configuration {
+export function addExternalAppsToConfiguration(appConf: ExternalApp[], conf: Configuration): Configuration {
     conf.typy_objektu.forEach(type => {
         appConf.filter(item => item.zpracovává.indexOf(type.iri) !== -1).forEach(app => {
             if (!type.aplikace) type.aplikace = []
