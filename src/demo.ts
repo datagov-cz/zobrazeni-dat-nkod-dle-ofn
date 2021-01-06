@@ -68,15 +68,9 @@ async function loadTable(): Promise<void> {
  * @param data vstupní data
  */
 async function convertData(data: any[]): Promise<any> {
-    const promises: Promise<string[]>[] = []
 
-    function formatRow(item, link) {
-        return [item.název.cs, item.typ, item.popis.cs, appsForIRI(link, currentType)]
-    }
-
-    data.forEach(row => {
-        const url = proxy(row.link.value);
-        promises.push(new Promise<string[]>((resolve, reject) => {
+    function getPromise(url: string) {
+        return new Promise<string[]>((resolve, reject) => {
             $.ajax({
                 url,
                 dataType: "json",
@@ -93,9 +87,14 @@ async function convertData(data: any[]): Promise<any> {
                 error: ((jqXHR, textStatus, errorThrown) =>
                     reject(textStatus + "\n" + errorThrown + "\n" + JSON.stringify(jqXHR)))
             })
-        }))
-    })
-    return Promise.all(promises);
+        });
+    }
+
+    function formatRow(item, link) {
+        return [item.název.cs, item.typ, item.popis.cs, appsForIRI(link, currentType)]
+    }
+
+    return Promise.all(data.map(row => getPromise(proxy(row.link.value))));
 }
 
 /**

@@ -93,7 +93,7 @@ export function appsForIRI(link: string, currentType: ObjectType): string[] {
 }
 
 // pomocná funkce, která naformátuje parametry do URL
-//TODO zdokkumentovat do readme.md
+// TODO zdokkumentovat do readme.md
 function formatAppURL(application: AppConf, link: string, currentType: ObjectType) {
     return link2html(application.url + "/?" + encodeURIComponent(
         application.formát_url
