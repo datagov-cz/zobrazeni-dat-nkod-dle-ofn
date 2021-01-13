@@ -33,7 +33,7 @@ const tableOptions = {
 }
 
 
-export function demoApp(id: string, tableId: string) {
+export async function demoApp(id: string, tableId: string) {
     const newConfig = addExternalAppsToConfiguration(appConfig, config);
     console.info("Using enhanced config:", newConfig);
 
@@ -46,7 +46,7 @@ export function demoApp(id: string, tableId: string) {
         $demo.append($("<table>").attr("id", tableId));
         $demo.append($("<div>").attr("id", id));
         theTable = $('#' + tableId).DataTable(tableOptions);
-        loadTable()
+        await loadTable()
     }
 }
 
@@ -61,13 +61,14 @@ async function loadTable(): Promise<void> {
 /**
  * Funkce transformuje data z polepolí ze SPARQL do rozvinuté formy - připraví typy Promise,
  * které se paralelně vyhodnocují a povyhodnocení všech výsledek vrátí
+ *
  * @param data vstupní data
  */
 async function convertData(data: any[]): Promise<any> {
 
     function getPromise(url: string) {
         return new Promise<string[]>((resolve, reject) => {
-            $.ajax({
+            void $.ajax({
                 url,
                 dataType: "json",
                 crossDomain: true,
@@ -86,8 +87,13 @@ async function convertData(data: any[]): Promise<any> {
         });
     }
 
-    function formatRow(item, link) {
-        return [item.název.cs, item.typ, item.popis.cs, linksForAppsToHTML(link, currentType)]
+    function formatRow(item, link): string[] {
+        return [
+            JSON.stringify(item.název.cs),
+            JSON.stringify(item.typ),
+            JSON.stringify(item.popis.cs),
+            linksForAppsToHTML(link, currentType).join(", ")
+        ]
     }
 
     return Promise.all(data.map(row => getPromise(proxy(row.link.value))));
@@ -111,6 +117,7 @@ function proxy(url: string): string {
 
 /**
  * vyrobí a vloží do HTML stránky SELECT s výběrem typu
+ *
  * @param id
  * @param types
  */
@@ -125,7 +132,7 @@ function createSelectType(id: string, types: ObjectType[]): void {
     appDiv.append(select);
     select.on("change", function (this: any) {
             currentType = types[this.selectedIndex];
-            loadTable();
+            void loadTable();
         }
     );
 }

@@ -54,7 +54,7 @@ const dataTableOptions = {
  * vzoru s klíčovými slovy async/await {@link https://en.wikipedia.org/wiki/Async/await}
  *
  */
-export async function browserApp() {
+export async function browserApp(): Promise<void> {
     const newConfig = addExternalAppsToConfiguration(appConfig, config)
     console.info("Using enhanced config:", newConfig);
 
@@ -96,26 +96,39 @@ function loadOptionalURLendpoint() {
 /**
  * Value renderer je transformační funkce, která dovoluje programátorovi nechat vypsat hodnoty vrácené
  * jako odpověď na dotaz v jiné formě, provést transformaci.
+ *
  * @param row z jakého řádku jodpovědi je klíč/hodnota
  * @param key klíš k hodnotě
  */
 // TODO funkce by měla vracet string, HTML string, nebo něco pro DataTable
-function valueRenderer(row, key): any {
-    const keyName = "zdroj"
-    // použití switch je v tomto místě zbytné, nicméně nabízí snadnou rozšiřitelnost do budoucna
-    switch (key) {
-        case keyName: {
-            return linksForAppsToHTML(row[keyName].value, currentType)
+function valueRenderer(row, key: string): any {
+    if (row && key && row[key] && row[key].value) {
+        // použití switch je v tomto místě zbytné, nicméně nabízí snadnou rozšiřitelnost do budoucna
+        const keyName = "zdroj"
+        switch (key) {
+            case keyName: {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                const element = row[keyName];
+                if (element && element.value) {
+                    return linksForAppsToHTML(element.value, currentType)
+                } else {
+                    console.error("unexpected result row format: ", JSON.stringify(row))
+                }
+            }
+            default: {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-member-access
+                return row[key].value;
+            }
         }
-        default: {
-            return row[key].value;
-        }
+    } else {
+        console.error("both argumente must be valid, defined", row, key)
     }
 }
 
 
 /**
  * vytvoří select pro změnu koncového bodu pro dotazy
+ *
  * @param id
  * @param endpoints
  */
@@ -130,13 +143,14 @@ function createSelectEndpoint(id: string, endpoints: Endpoint[]): void {
     select.on("change", function (this: any) {
             currentEndpoint = endpoints[this.selectedIndex];
             // console.debug("changing endpoint to", currentEndpoint)
-            loadTable();
+            void loadTable();
         }
     );
 }
 
 /**
  * vytvoří SELECT pro výběr typu dat
+ *
  * @param id
  * @param types
  */
@@ -152,7 +166,7 @@ function createSelectType(id: string, types: ObjectType[]): void {
     select.on("change", function (this: any) {
             currentType = types[this.selectedIndex];
             // console.debug("change type to", currentType);
-            loadTable();
+            void loadTable();
         }
     );
 }

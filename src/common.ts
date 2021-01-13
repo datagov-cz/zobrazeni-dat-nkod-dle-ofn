@@ -39,6 +39,7 @@ export type ExternalApp = {
 
 /**
  * Základní fokce pro zpravocvání
+ *
  * @param endpoint koncový bod SPARQL pro dotazy
  * @param query vlastní SPARQL dotaz
  * @param headless TRUE -zda se má výsledek transformovat do ploché struktury pole polí [][],
@@ -48,16 +49,16 @@ export type ExternalApp = {
 export async function loadFromSPARQL(endpoint: string,
                                      query: string,
                                      headless = false,
-                                     userRenderValueFn?: (row, key) => (string)): Promise<any[]> {
+                                     userRenderValueFn?: (row, key:string) => (string)): Promise<any[]> {
     console.info("Starting loading data from ", endpoint, query)
 
     // výchozí vykreslovač protstě použije výchozí hodnoty
-    let renderValueFn = (row, key) => row[key].value;
+    let renderValueFn = (row, key: string) => JSON.stringify(row[key].value);
     if (userRenderValueFn) renderValueFn = userRenderValueFn;
 
     return new Promise<any[]>((resolve, reject) => {
         // obaluje volání SparqlClient do Promise - moderní přístup v TypeScriptu
-        new SparqlClient({endpointUrl: endpoint}).query.select(query).then(stream => {
+        void new SparqlClient({endpointUrl: endpoint}).query.select(query).then(stream => {
             const accumulator: any[] = []
 
             stream.on('data', row => {
@@ -106,6 +107,7 @@ function linkToHTML(application: ExternalApp, formatedLink: string) {
 
 /**
  * Pripojí externí soubor s popisem aplikací a jejich schopností do konfiguračního souboru
+ *
  * @param appConf
  * @param conf
  */
