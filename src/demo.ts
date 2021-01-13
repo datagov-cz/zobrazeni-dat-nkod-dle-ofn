@@ -1,5 +1,5 @@
 import $ from "jquery";
-import 'datatables.net-bs4';
+import "datatables.net-bs4";
 import config from "./conf/config.json";
 import {linksForAppsToHTML, Endpoint, loadFromSPARQL, addExternalAppsToConfiguration, ObjectType} from "./common";
 import appConfig from "./conf/applications.json";
@@ -45,7 +45,7 @@ export async function demoApp(id: string, tableId: string) {
         createSelectType("demo", newConfig.typy_objektu);
         $demo.append($("<table>").attr("id", tableId));
         $demo.append($("<div>").attr("id", id));
-        theTable = $('#' + tableId).DataTable(tableOptions);
+        theTable = $("#" + tableId).DataTable(tableOptions);
         await loadTable()
     }
 }
@@ -104,7 +104,7 @@ async function convertData(data: any[]): Promise<any> {
  * Pokud je parametr "typ" nalezen, tak je obsah využit ihned
  */
 function loadOptionalURLtype() {
-    const type = new URLSearchParams(window.location.search).get('typ');
+    const type = new URLSearchParams(window.location.search).get("typ");
     if (type != null) {
         config.typy_objektu.unshift({název: "z parametru typ: " + String(type), iri: String(type)});
         currentType = config.typy_objektu[0];
@@ -125,9 +125,9 @@ function createSelectType(id: string, types: ObjectType[]): void {
     const appDiv = $(`#${id}`).append($("<div class='types'>"));
     appDiv.remove("select");
     appDiv.append($("<label>").attr("for", `${id}_type_selector`).text("Typ dat"))
-    const select = $("<select>").attr('for', `${id}_type_selector`);
+    const select = $("<select>").attr("for", `${id}_type_selector`);
     types.forEach(item => {
-        select.append($("<option>").attr('value', item.iri).text(item.název));
+        select.append($("<option>").attr("value", item.iri).text(item.název));
     })
     appDiv.append(select);
     select.on("change", function (this: any) {

@@ -61,7 +61,7 @@ export async function loadFromSPARQL(endpoint: string,
         void new SparqlClient({endpointUrl: endpoint}).query.select(query).then(stream => {
             const accumulator: any[] = []
 
-            stream.on('data', row => {
+            stream.on("data", row => {
                 if (headless) {
                     const item = Object.keys(row).map(key => renderValueFn(row, key));
                     accumulator.push(item)
@@ -70,11 +70,11 @@ export async function loadFromSPARQL(endpoint: string,
                 }
             })
 
-            stream.on('end', () => {
+            stream.on("end", () => {
                 resolve(accumulator);
             })
 
-            stream.on('error', err => {
+            stream.on("error", err => {
                 reject(err);
             })
 

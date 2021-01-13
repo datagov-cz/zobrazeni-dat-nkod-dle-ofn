@@ -1,5 +1,5 @@
 import $ from "jquery";
-import 'datatables.net-bs4';
+import "datatables.net-bs4";
 import config from "./conf/config.json";
 import appConfig from "./conf/applications.json";
 import {linksForAppsToHTML, Endpoint, loadFromSPARQL, addExternalAppsToConfiguration, ObjectType} from "./common"
@@ -86,7 +86,7 @@ async function loadTable(): Promise<void> {
  * koncový bod pro dotazování
  */
 function loadOptionalURLendpoint() {
-    const url = new URLSearchParams(window.location.search).get('url');
+    const url = new URLSearchParams(window.location.search).get("url");
     if (url != null) {
         config.koncove_body.unshift({název: "z parametru url: " + String(url), url: String(url)});
         currentEndpoint = config.koncove_body[0];
@@ -135,9 +135,9 @@ function valueRenderer(row, key: string): any {
 function createSelectEndpoint(id: string, endpoints: Endpoint[]): void {
     const appDiv = $(`#${id}`).append($("<div class='endpoints'>"));
     appDiv.append($("<label>").attr("for", `${id}_catalog_selector`).text("Katalog"))
-    const select = $("<select>").attr('for', `${id}_catalog_selector`);
+    const select = $("<select>").attr("for", `${id}_catalog_selector`);
     endpoints.forEach(item => {
-        select.append($("<option>").attr('value', item.url).text(item.název));
+        select.append($("<option>").attr("value", item.url).text(item.název));
     })
     appDiv.append(select);
     select.on("change", function (this: any) {
@@ -158,9 +158,9 @@ function createSelectType(id: string, types: ObjectType[]): void {
     const appDiv = $(`#${id}`).append($("<div class='types'>"));
     appDiv.remove("select");
     appDiv.append($("<label>").attr("for", `${id}_type_selector`).text("Typ dat"))
-    const select = $("<select>").attr('for', `${id}_type_selector`);
+    const select = $("<select>").attr("for", `${id}_type_selector`);
     types.forEach(item => {
-        select.append($("<option>").attr('value', item.iri).text(item.název));
+        select.append($("<option>").attr("value", item.iri).text(item.název));
     })
     appDiv.append(select);
     select.on("change", function (this: any) {
