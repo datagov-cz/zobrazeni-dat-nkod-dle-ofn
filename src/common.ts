@@ -29,11 +29,11 @@ export type Configuration = {
  * Typ pro formát externího souboru s popisem aplikací a jejich dovedností
  */
 export type ExternalApp = {
-    "název": string,
-    "zpracovává": string[],
-    "url": string,
-    "formát_url": string,
-    "popis": string
+    název: string,
+    zpracovává: string[],
+    url: string,
+    formát_url: string,
+    popis: string
 }
 
 
@@ -49,7 +49,7 @@ export type ExternalApp = {
 export async function loadFromSPARQL(endpoint: string,
                                      query: string,
                                      headless = false,
-                                     userRenderValueFn?: (row, key:string) => (string)): Promise<any[]> {
+                                     userRenderValueFn?: (row, key: string) => (string)): Promise<any[]> {
     console.info("Starting loading data from ", endpoint, query)
 
     // výchozí vykreslovač protstě použije výchozí hodnoty

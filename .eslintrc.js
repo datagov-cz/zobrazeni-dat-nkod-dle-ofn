@@ -185,6 +185,7 @@ module.exports = {
         ],
         "prefer-arrow/prefer-arrow-functions": "warn",
         "prefer-const": "error",
+        "quote-props": ["error", "consistent"],
         "radix": "error",
         "spaced-comment": [
             "error",
