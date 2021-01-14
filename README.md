@@ -10,7 +10,7 @@ Použijte [node.js](https://nodejs.org/en/download/) ve verzi 14+ (nainstalujte,
 * Lokálně spusťte: 
 (v okně příkazové řádky, přesuňte se do adresáře, kde máte uloženy soubory projektu, typicky do adresáře `zobrazeni-dat-nkod-dle-ofn`)
 ``` shell script
-..\zobrazeni-dat-nkod-dle-ofn> npm i
+..\zobrazeni-dat-nkod-dle-ofn> npm ci
 ..\zobrazeni-dat-nkod-dle-ofn> npm run start
 ```
 měli byste dostat odezvu:
