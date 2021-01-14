@@ -52,9 +52,9 @@ export async function loadFromSPARQL(endpoint: string,
                                      userRenderValueFn?: (row, key: string) => (string)): Promise<any[]> {
     console.info("Starting loading data from ", endpoint, query)
 
-    // výchozí vykreslovač protstě použije výchozí hodnoty
-    let renderValueFn = (row, key: string) => JSON.stringify(row[key].value);
-    if (userRenderValueFn) renderValueFn = userRenderValueFn;
+    // výchozí vykreslovač prostě použije výchozí hodnoty
+    const defaultRenderValueFn = (row, key: string) => JSON.stringify(row[key].value);
+    const renderValueFn = userRenderValueFn ? userRenderValueFn : defaultRenderValueFn;
 
     return new Promise<any[]>((resolve, reject) => {
         // obaluje volání SparqlClient do Promise - moderní přístup v TypeScriptu
@@ -114,7 +114,9 @@ function linkToHTML(application: ExternalApp, formatedLink: string) {
 export function addExternalAppsToConfiguration(appConf: ExternalApp[], conf: Configuration): Configuration {
     conf.typy_objektu.forEach(type => {
         appConf.filter(item => item.zpracovává.indexOf(type.iri) !== -1).forEach(app => {
-            if (!type.aplikace) type.aplikace = []
+            if (!type.aplikace) {
+                type.aplikace = []
+            }
             type.aplikace.push(app)
         })
     })

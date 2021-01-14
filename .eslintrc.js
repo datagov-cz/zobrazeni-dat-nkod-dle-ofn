@@ -103,6 +103,7 @@ module.exports = {
         ],
         "complexity": "off",
         "constructor-super": "error",
+        "curly": "error",
         "eqeqeq": [
             "error",
             "smart"
