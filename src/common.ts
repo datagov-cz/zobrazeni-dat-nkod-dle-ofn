@@ -91,18 +91,18 @@ export function linksForAppsToHTML(link: string, currentType: ObjectType): strin
 }
 
 // pomocná funkce, která naformátuje parametry do URL
-// TODO zdokkumentovat do readme.md
+// TODO zdokumentovat do readme.md
 function appLinkToHTML(application: ExternalApp, link: string, currentType: ObjectType) {
-    return linkToHTML(application, application.url + "/?" + encodeURIComponent(
-        application.formát_url
-            .replace("${0}", link)
-            .replace("${1}", currentType.iri)
-            .replace("${2}", "Data ze zdroje dle OFN - " + currentType.název)));
+    const uriComponent = application.formát_url
+        .replace("${0}", link)
+        .replace("${1}", currentType.iri)
+        .replace("${2}", "Data ze zdroje dle OFN - " + currentType.název);
+    return linkToHTML(application, `${application.url}/?${encodeURIComponent(uriComponent)}`);
 }
 
 // vykreslí HTML část kódu
-function linkToHTML(application: ExternalApp, formatedLink: string) {
-    return `<a href="${formatedLink}" title="${application.popis}">${application.název}</a>`;
+function linkToHTML(application: ExternalApp, httpLink: string) {
+    return `<a href="${httpLink}" title="${application.popis}">${application.název}</a>`;
 }
 
 /**
