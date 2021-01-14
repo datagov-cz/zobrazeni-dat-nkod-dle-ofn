@@ -1,1 +1,1 @@
-declare module 'datatables.net-bs4';
+declare module "datatables.net-bs4";
