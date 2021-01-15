@@ -15,7 +15,7 @@ WHERE {
 
     ?s a dcat:Dataset ;
         dcat:distribution ?distribuce ;
-        dcterms:conformsTo ${iri} ;
+        dcterms:conformsTo <${iri}> ;
         dcterms:title ?název ;
         dcterms:description ?popis;
         dcterms:publisher ?vydavatel_iri .

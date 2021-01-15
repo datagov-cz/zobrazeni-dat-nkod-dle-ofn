@@ -10,7 +10,7 @@ PREFIX dcat: <http://www.w3.org/ns/dcat#>
 SELECT ?link
 WHERE {
 ?datová_sada a dcat:Dataset ;
-dcterms:conformsTo ${iri} ;
+dcterms:conformsTo <${iri}> ;
 dcat:distribution ?distribuce .
 ?distribuce a dcat:Distribution ;
 dcterms:format <http://publications.europa.eu/resource/authority/file-type/JSON_LD> ;
@@ -111,6 +111,7 @@ function loadOptionalURLtype() {
     }
 }
 
+// TODO smazat proxy v produkcnim kodu, vyresit pro dev a prod
 function proxy(url: string): string {
     return url.replace("https://gitlab.com", "http://localhost:8010/proxy");
 }

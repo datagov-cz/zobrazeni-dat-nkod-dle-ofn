@@ -2,21 +2,21 @@
   {
     "název": "externí aplikace 2",
     "popis": "popis externi aplikace",
-    "zpracovává": ["<https://ofn.gov.cz/turistické-cíle/2020-07-01/>", "<https://ofn.gov.cz/sportoviště/2020-07-01/>"],
+    "zpracovává": ["https://ofn.gov.cz/turistické-cíle/2020-07-01/", "https://ofn.gov.cz/sportoviště/2020-07-01/"],
     "url": "https://secondapp.com",
     "formát_url": "where=${0}&iri=${1}&name=${2}"
   },
   {
     "název": "externí aplikace 3",
     "popis": "popis externi aplikace",
-    "zpracovává": ["<https://ofn.gov.cz/turistické-cíle/2020-07-01/>"],
+    "zpracovává": ["https://ofn.gov.cz/turistické-cíle/2020-07-01/"],
     "url": "https://thirdapp.com",
     "formát_url": "where=${0}&iri=${1}"
   },
   {
     "název": "externí aplikace 4",
     "popis": "popis externi aplikace",
-    "zpracovává": ["<https://ofn.gov.cz/sportoviště/2020-07-01/>"],
+    "zpracovává": ["https://ofn.gov.cz/sportoviště/2020-07-01/"],
     "url": "https://fourthapp.com",
     "formát_url": "kde=${0}&zdroj=${1}"
   }
