@@ -2,14 +2,14 @@
   {
     "název": "Soubor plakátů",
     "popis": "Aplikace generuje plakáty pro turistické cíle",
-    "zpracovává": ["<https://ofn.gov.cz/turistické-cíle/2020-07-01/>"],
+    "zpracovává": ["https://ofn.gov.cz/turistické-cíle/2020-07-01/"],
     "url": "https://opendata-mvcr.github.io/app-ofn-plakaty/#/",
     "formát_url": "dataurl=${0}"
   },
   {
     "název": "Konkrétní plakát",
     "popis": "Aplikace generuje plakát pro turistický cíl",
-    "zpracovává": ["<https://ofn.gov.cz/turistické-cíle/2020-07-01/>"],
+    "zpracovává": ["https://ofn.gov.cz/turistické-cíle/2020-07-01/"],
     "url": "https://opendata-mvcr.github.io/app-ofn-plakaty/#/",
     "formát_url": "dataurl=${0}&iri=${1}"
   },
