@@ -11,6 +11,7 @@
     "test": "echo \"Error: Testy eště porobimě\" && exit 1",
     "build": "webpack --config ./webpack.config.js",
     "server": "http-server . -c-1",
+    "start-dev": "npm run start-proxy & npm run build & npm run server",
     "start": "npm run build & npm run server",
     "eslint": "eslint -c .eslintrc.js --ext .ts ./src"
   },

@@ -58,16 +58,16 @@ export async function browserApp(): Promise<void> {
     const newConfig = addExternalAppsToConfiguration(appConfig, config)
     console.info("Using enhanced config:", newConfig);
 
-
     loadOptionalURLendpoint();
 
     const $browser = $("#browser");
     if ($browser.length) {
-        createSelectEndpoint("browser", newConfig.koncove_body);
-        createSelectType("browser", newConfig.typy_objektu as any);
+        $browser.append("<div>").addClass("row").attr("id", "row");
+        createSelectEndpoint("row", newConfig.koncove_body);
+        createSelectType("row", newConfig.typy_objektu as any);
 
         // create <table> and convert into DataTable
-        const $table = $("<table>");
+        const $table = $("<table>").addClass(["table", "table-striped", "table-bordered", "w-100"]);
         $browser.append($table)
         table = $table.DataTable(dataTableOptions);
 
@@ -133,7 +133,7 @@ function valueRenderer(row, key: string): any {
  * @param endpoints
  */
 function createSelectEndpoint(id: string, endpoints: Endpoint[]): void {
-    const appDiv = $(`#${id}`).append($("<div class='endpoints'>"));
+    const appDiv = $(`#${id}`).append($("<div class='endpoints col-sm m-2 p-3'>"));
     appDiv.append($("<label>").attr("for", `${id}_catalog_selector`).text("Katalog"))
     const select = $("<select>").attr("for", `${id}_catalog_selector`);
     endpoints.forEach(item => {

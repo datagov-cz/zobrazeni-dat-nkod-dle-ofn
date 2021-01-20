@@ -43,7 +43,9 @@ export async function demoApp(id: string, tableId: string) {
     const $demo = $("#demo");
     if ($demo.length) {
         createSelectType("demo", newConfig.typy_objektu);
-        $demo.append($("<table>").attr("id", tableId));
+        $demo.append($("<table>")
+            .attr("id", tableId))
+            .addClass(["table", "table-striped", "table-bordered", "w-100"]);
         $demo.append($("<div>").attr("id", id));
         theTable = $("#" + tableId).DataTable(tableOptions);
         await loadTable()
