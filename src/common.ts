@@ -97,7 +97,7 @@ function appLinkToHTML(application: ExternalApp, link: string, currentType: Obje
         .replace("${0}", link)
         .replace("${1}", currentType.iri)
         .replace("${2}", "Data ze zdroje dle OFN - " + currentType.název);
-    return linkToHTML(application, `${application.url}/?${encodeURIComponent(uriComponent)}`);
+    return linkToHTML(application, `${application.url}?${uriComponent}`);
 }
 
 // vykreslí HTML část kódu
