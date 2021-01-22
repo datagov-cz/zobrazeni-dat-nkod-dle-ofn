@@ -12,13 +12,11 @@
   "typy_objektu": [
     {
       "název": "Turistické cíle",
-      "iri": "https://ofn.gov.cz/turistické-cíle/2020-07-01/",
-      "aplikace": []
+      "iri": "https://ofn.gov.cz/turistické-cíle/2020-07-01/"
     },
     {
       "název": "Sportoviště",
-      "iri": "https://ofn.gov.cz/sportoviště/2020-07-01/",
-      "aplikace": []
+      "iri": "https://ofn.gov.cz/sportoviště/2020-07-01/"
     },
     {
       "název": "Aktuality",

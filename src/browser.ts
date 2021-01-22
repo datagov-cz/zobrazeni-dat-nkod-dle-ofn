@@ -133,13 +133,14 @@ function valueRenderer(row, key: string): any {
  * @param endpoints
  */
 function createSelectEndpoint(id: string, endpoints: Endpoint[]): void {
-    const appDiv = $(`#${id}`).append($("<div class='endpoints col-sm m-2 p-3'>"));
-    appDiv.append($("<label>").attr("for", `${id}_catalog_selector`).text("Katalog"))
+    const $endpoints = $("<div class='endpoints col-sm m-2 p-3'>");
+    $(`#${id}`).append($endpoints);
+    $endpoints.append($("<label>").attr("for", `${id}_catalog_selector`).text("Katalog"))
     const select = $("<select>").attr("for", `${id}_catalog_selector`);
     endpoints.forEach(item => {
         select.append($("<option>").attr("value", item.url).text(item.název));
     })
-    appDiv.append(select);
+    $endpoints.append(select);
     select.on("change", function (this: any) {
             currentEndpoint = endpoints[this.selectedIndex];
             // console.debug("changing endpoint to", currentEndpoint)
@@ -155,14 +156,15 @@ function createSelectEndpoint(id: string, endpoints: Endpoint[]): void {
  * @param types
  */
 function createSelectType(id: string, types: ObjectType[]): void {
-    const appDiv = $(`#${id}`).append($("<div class='types'>"));
-    appDiv.remove("select");
-    appDiv.append($("<label>").attr("for", `${id}_type_selector`).text("Typ dat"))
+    const $types = $("<div class='types col-sm m-2 p-3'>");
+    $(`#${id}`).append($types);
+    $types.remove("select");
+    $types.append($("<label>").attr("for", `${id}_type_selector`).text("Typ dat"))
     const select = $("<select>").attr("for", `${id}_type_selector`);
     types.forEach(item => {
         select.append($("<option>").attr("value", item.iri).text(item.název));
     })
-    appDiv.append(select);
+    $types.append(select);
     select.on("change", function (this: any) {
             currentType = types[this.selectedIndex];
             // console.debug("change type to", currentType);

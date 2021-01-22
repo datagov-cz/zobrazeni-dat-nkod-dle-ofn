@@ -55,7 +55,8 @@ export async function demoApp(id: string, tableId: string) {
 
 async function loadTable(): Promise<void> {
     // loads from SPARQL and then load all details in parallel
-    const data = await convertData(await loadFromSPARQL(currentEndpoint.url, getQuery(currentType.iri), false))
+    let data: string[][] = await convertData(await loadFromSPARQL(currentEndpoint.url, getQuery(currentType.iri), false))
+    data = data.filter(row => row.length > 0)
     console.info("SPARQL data loaded:", data);
     theTable.clear().rows.add(data).draw();
 }
@@ -83,8 +84,12 @@ async function convertData(data: any[]): Promise<any> {
                         resolve(formatRow(result, url))
                     }
                 },
-                error: ((jqXHR, textStatus, errorThrown) =>
-                    reject(textStatus + "\n" + errorThrown + "\n" + JSON.stringify(jqXHR)))
+                error: (jqXHR, textStatus, errorThrown) => {
+                    console.error("cteni z URL selhalo", url)
+                    console.error(textStatus + "\n" + errorThrown + "\n" + JSON.stringify(jqXHR));
+                    resolve([])
+                    // resolve(["chyba pri cteni dat z URL" + url, "", "", ""])
+                }
             })
         });
     }
@@ -115,6 +120,11 @@ function loadOptionalURLtype() {
 
 // TODO smazat proxy v produkcnim kodu, vyresit pro dev a prod
 function proxy(url: string): string {
+    // if (url.startsWith("https://gitlab.com")) {
+    //     return "https://api.allorigins.win/get?url=" + encodeURIComponent(url)
+    // } else {
+    //     return url;
+    // }
     return url.replace("https://gitlab.com", "http://localhost:8010/proxy");
 }
 
