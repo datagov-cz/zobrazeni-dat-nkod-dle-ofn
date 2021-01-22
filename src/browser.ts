@@ -110,7 +110,7 @@ function valueRenderer(row, key: string): any {
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                 const element = row[keyName];
                 if (element && element.value) {
-                    return linksForAppsToHTML(element.value, currentType)
+                    return linksForAppsToHTML(element.value, currentType, null)
                 } else {
                     console.error("unexpected result row format: ", JSON.stringify(row))
                 }

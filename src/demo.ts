@@ -54,11 +54,12 @@ export async function demoApp(id: string, tableId: string) {
 
 
 async function loadTable(): Promise<void> {
+    function useData(rows: string[][]): void {
+        theTable.rows.add(rows).draw();
+    }
+
     // loads from SPARQL and then load all details in parallel
-    let data: string[][] = await convertData(await loadFromSPARQL(currentEndpoint.url, getQuery(currentType.iri), false))
-    data = data.filter(row => row.length > 0)
-    console.info("SPARQL data loaded:", data);
-    theTable.clear().rows.add(data).draw();
+    convertData(await loadFromSPARQL(currentEndpoint.url, getQuery(currentType.iri), false), useData)
 }
 
 /**
@@ -66,44 +67,42 @@ async function loadTable(): Promise<void> {
  * které se paralelně vyhodnocují a povyhodnocení všech výsledek vrátí
  *
  * @param data vstupní data
+ * @param useData funkce zpracovávající výsledek
  */
-async function convertData(data: any[]): Promise<any> {
+function convertData(data: any[], useData: (rows: string[][]) => void): void {
 
-    function getPromise(url: string) {
-        return new Promise<string[]>((resolve, reject) => {
-            void $.ajax({
-                url,
-                dataType: "json",
-                crossDomain: true,
-                success: (result) => {
-                    if (result instanceof Array) {
-                        result.forEach(item => {
-                            resolve(formatRow(item, url));
-                        })
-                    } else {
-                        resolve(formatRow(result, url))
-                    }
-                },
-                error: (jqXHR, textStatus, errorThrown) => {
-                    console.error("cteni z URL selhalo", url)
-                    console.error(textStatus + "\n" + errorThrown + "\n" + JSON.stringify(jqXHR));
-                    resolve([])
-                    // resolve(["chyba pri cteni dat z URL" + url, "", "", ""])
+    data.forEach(row => {
+        const url = proxy(row.link.value)
+        void $.ajax({
+            url,
+            dataType: "json",
+            crossDomain: true,
+            success: (result) => {
+                if (result instanceof Array) {
+                    result.forEach(item => {
+                        useData([formatRow(item, url)]);
+                    })
+                } else {
+                    useData([formatRow(result, url)])
                 }
-            })
-        });
-    }
+            },
+            error: (jqXHR, textStatus, errorThrown) => {
+                console.error("cteni z URL selhalo", url)
+                console.error(textStatus + "\n" + errorThrown + "\n" + JSON.stringify(jqXHR));
+            }
+        })
+
+    })
 
     function formatRow(item, link): string[] {
         return [
             JSON.stringify(item.název.cs),
             JSON.stringify(item.typ),
             JSON.stringify(item.popis.cs),
-            linksForAppsToHTML(link, currentType).join(", ")
+            linksForAppsToHTML(link, currentType, item).join(", ")
         ]
     }
 
-    return Promise.all(data.map(row => getPromise(proxy(row.link.value))));
 }
 
 /**

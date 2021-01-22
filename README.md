@@ -54,6 +54,7 @@ Příklad konfigurace
  |`${0}`|link na otevřená data, které mají být zpracována aplikací|
  |`${1}`|IRI zdroje dat|
  |`${2}`|Název zdroje dat|
+ |`${3}`|IRI samotn0ho objektu, pokud je k dispozici|
  
  Příklad:          
 ```json

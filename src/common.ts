@@ -84,20 +84,19 @@ export async function loadFromSPARQL(endpoint: string,
 }
 
 // připraví odkaz na aplikaci z poskytnutého linku
-export function linksForAppsToHTML(link: string, currentType: ObjectType): string[] {
-    return currentType.aplikace ?
-        currentType.aplikace.map(application => appLinkToHTML(application, link, currentType)) :
-        [];
-}
-
-// pomocná funkce, která naformátuje parametry do URL
-// TODO zdokumentovat do readme.md
-function appLinkToHTML(application: ExternalApp, link: string, currentType: ObjectType) {
-    const uriComponent = application.formát_url
-        .replace("${0}", link)
-        .replace("${1}", currentType.iri)
-        .replace("${2}", "Data ze zdroje dle OFN - " + currentType.název);
-    return linkToHTML(application, `${application.url}?${uriComponent}`);
+export function linksForAppsToHTML(link: string, currentType: ObjectType, payload: any): string[] {
+    if (!currentType.aplikace) {
+        return [];
+    } else {
+        return currentType.aplikace.map(application => {
+            const uriComponent = application.formát_url
+                .replace("${0}", link)
+                .replace("${1}", currentType.iri)
+                .replace("${2}", "Data ze zdroje dle OFN - " + currentType.název)
+                .replace("${3}", (payload && payload.iri) ? payload.iri : "")
+            return linkToHTML(application, `${application.url}?${uriComponent}`);
+        });
+    }
 }
 
 // vykreslí HTML část kódu

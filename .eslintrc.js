@@ -140,7 +140,7 @@ module.exports = {
         "no-caller": "error",
         "no-cond-assign": "error",
         "no-console": [
-            "warn",
+            "error",
             {
                 "allow": [
                     "warn",
