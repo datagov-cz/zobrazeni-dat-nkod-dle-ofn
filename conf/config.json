@@ -1,0 +1,34 @@
+{
+  "koncove_body": [
+    {
+      "název": "https://oha03.mvcr.gov.cz/sparql",
+      "url": "https://oha03.mvcr.gov.cz/sparql"
+    },
+    {
+      "název": "https://data.gov.cz/sparkl",
+      "url": "https://data.gov.cz/sparkl"
+    }
+  ],
+  "typy_objektu": [
+    {
+      "název": "Turistické cíle",
+      "iri": "https://ofn.gov.cz/turistické-cíle/2020-07-01/"
+    },
+    {
+      "název": "Sportoviště",
+      "iri": "https://ofn.gov.cz/sportoviště/2020-07-01/"
+    },
+    {
+      "název": "Aktuality",
+      "iri": "https://ofn.gov.cz/aktuality/2020-07-01/"
+    },
+    {
+      "název": "Události",
+      "iri": "https://ofn.gov.cz/události/2020-07-01/"
+    },
+    {
+      "název": "Registr práv a povinností",
+      "iri": "https://ofn.gov.cz/registr-práv-a-povinností/"
+    }
+  ]
+}
