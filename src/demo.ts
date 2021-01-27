@@ -33,21 +33,19 @@ const tableOptions = {
 }
 
 
-export async function demoApp(id: string, tableId: string) {
+export async function renderDemoApp(elementId: string) {
     const newConfig = addExternalAppsToConfiguration(appConfig, config);
+    const tableId = "thetable"
     console.info("Using enhanced config:", newConfig);
-
 
     loadOptionalURLtype()
 
-    const $demo = $("#demo");
+    const $demo = $(elementId);
     if ($demo.length) {
         createSelectType("demo", newConfig.typy_objektu);
-        $demo.append($("<table>")
-            .attr("id", tableId))
-            .addClass(["table", "table-striped", "table-bordered", "w-100"]);
-        $demo.append($("<div>").attr("id", id));
-        theTable = $("#" + tableId).DataTable(tableOptions);
+        const $table = $("<table>").attr("id", tableId).addClass(["table", "table-striped", "table-bordered", "w-100"]);
+        $demo.append($table)
+        theTable = $table.DataTable(tableOptions);
         await loadTable()
     }
 }

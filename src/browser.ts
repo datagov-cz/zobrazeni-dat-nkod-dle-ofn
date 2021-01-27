@@ -54,15 +54,17 @@ const dataTableOptions = {
  * vzoru s klíčovými slovy async/await {@link https://en.wikipedia.org/wiki/Async/await}
  *
  */
-export async function browserApp(): Promise<void> {
+export async function renderBrowserApp(elementId: string): Promise<void> {
     const newConfig = addExternalAppsToConfiguration(appConfig, config)
     console.info("Using enhanced config:", newConfig);
 
     loadOptionalURLendpoint();
 
-    const $browser = $("#browser");
+    const $browser = $(elementId);
     if ($browser.length) {
-        $browser.append("<div>").addClass("row").attr("id", "row");
+
+        const row = $("<div>").addClass("row").attr("id", "row");
+        $browser.append(row)
         createSelectEndpoint("row", newConfig.koncove_body);
         createSelectType("row", newConfig.typy_objektu as any);
 
