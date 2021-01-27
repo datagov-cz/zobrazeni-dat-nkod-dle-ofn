@@ -10,7 +10,7 @@
     "start-proxy": "lcp --proxyUrl https://gitlab.com",
     "test": "jest",
     "build": "webpack --config ./webpack.config.js",
-    "server": "http-server . -c-1",
+    "server": "http-server ./dist -c-1",
     "start-dev": "npm run start-proxy & npm run build & npm run server",
     "start": "npm run build & npm run server",
     "eslint": "eslint -c .eslintrc.js --ext .ts ./src"
