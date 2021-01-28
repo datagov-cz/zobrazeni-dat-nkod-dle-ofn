@@ -24,8 +24,7 @@ module.exports = {
             patterns: [
                 { from: "./src/assets", to: "./assets"},
                 { from: "./src/conf", to: "./conf"},
-                { from: "./*.html", to: "./"},
-                { from: "./dist", to: "../.github"}
+                { from: "./*.html", to: "./"}
             ],
         }),
     ]
