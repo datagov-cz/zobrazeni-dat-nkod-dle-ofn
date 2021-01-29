@@ -39,7 +39,7 @@ let table: DataTables.Api;
 
 const dataTableOptions = {
     language: {
-        url: "http://cdn.datatables.net/plug-ins/1.10.22/i18n/cs.json"
+        url: "https://cdn.datatables.net/plug-ins/1.10.22/i18n/cs.json"
     },
     data: [],
     columns: [
@@ -102,8 +102,7 @@ function loadOptionalURLendpoint() {
  * @param row z jakého řádku jodpovědi je klíč/hodnota
  * @param key klíš k hodnotě
  */
-// TODO funkce by měla vracet string, HTML string, nebo něco pro DataTable
-function valueRenderer(row, key: string): any {
+function valueRenderer(row, key: string): string {
     if (row && key && row[key] && row[key].value) {
         // použití switch je v tomto místě zbytné, nicméně nabízí snadnou rozšiřitelnost do budoucna
         const keyName = "zdroj"
@@ -112,7 +111,7 @@ function valueRenderer(row, key: string): any {
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                 const element = row[keyName];
                 if (element && element.value) {
-                    return linksForAppsToHTML(element.value, currentType, null)
+                    return linksForAppsToHTML(element.value, currentType, null).join(", ")
                 } else {
                     console.error("unexpected result row format: ", JSON.stringify(row))
                 }
@@ -124,6 +123,7 @@ function valueRenderer(row, key: string): any {
         }
     } else {
         console.error("both argumente must be valid, defined", row, key)
+        return "Error while rendering the cell value"
     }
 }
 

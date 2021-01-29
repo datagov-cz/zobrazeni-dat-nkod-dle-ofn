@@ -26,7 +26,7 @@ let theTable: DataTables.Api;
 
 const tableOptions = {
     language: {
-        url: "http://cdn.datatables.net/plug-ins/1.10.22/i18n/cs.json"
+        url: "https://cdn.datatables.net/plug-ins/1.10.22/i18n/cs.json"
     },
     data: [],
     columns: [{title: "Název"}, {title: "Typ"}, {title: "Popis"}, {title: "Aplikace"}]
