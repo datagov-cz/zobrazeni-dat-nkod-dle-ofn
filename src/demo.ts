@@ -43,6 +43,8 @@ export async function renderDemoApp(elementId: string) {
     const $demo = $(elementId);
     if ($demo.length) {
         $demo.append("<hr>");
+        // eslint-disable-next-line max-len
+            $demo.append(`<p>Zdroj dat: <strong>${newConfig.koncove_body[0].název}</strong> (<a href="${newConfig.koncove_body[0].url}">${newConfig.koncove_body[0].url}</a>)</p>`);
         createSelectType("demo", newConfig.typy_objektu);
         $demo.append("<hr>");
         const $table = $("<table>").attr("id", tableId).addClass(["table", "table-striped", "table-bordered", "w-100"]);

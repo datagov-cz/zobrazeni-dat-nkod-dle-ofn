@@ -1,11 +1,11 @@
 {
   "koncove_body": [
     {
-      "název": "https://oha03.mvcr.gov.cz/sparql",
+      "název": "Testovací databáze OD - oha03.mvcr.gov.cz",
       "url": "https://oha03.mvcr.gov.cz/sparql"
     },
     {
-      "název": "https://data.gov.cz/sparkl",
+      "název": "Databáze otevřených dat  - data.gov.cz",
       "url": "https://data.gov.cz/sparkl"
     }
   ],
