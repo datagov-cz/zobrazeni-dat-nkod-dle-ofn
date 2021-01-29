@@ -16,7 +16,7 @@ dcat:distribution ?distribuce .
 dcterms:format <http://publications.europa.eu/resource/authority/file-type/JSON_LD> ;
 dcat:downloadURL ?link .
 }
-`
+`;
 }
 
 // Globální stav aplikace - může být i jako třída
@@ -30,23 +30,25 @@ const tableOptions = {
     },
     data: [],
     columns: [{title: "Název"}, {title: "Typ"}, {title: "Popis"}, {title: "Aplikace"}]
-}
+};
 
 
 export async function renderDemoApp(elementId: string) {
     const newConfig = addExternalAppsToConfiguration(appConfig, config);
-    const tableId = "thetable"
+    const tableId = "thetable";
     console.info("Using enhanced config:", newConfig);
 
-    loadOptionalURLtype()
+    loadOptionalURLtype();
 
     const $demo = $(elementId);
     if ($demo.length) {
+        $demo.append("<hr>");
         createSelectType("demo", newConfig.typy_objektu);
+        $demo.append("<hr>");
         const $table = $("<table>").attr("id", tableId).addClass(["table", "table-striped", "table-bordered", "w-100"]);
-        $demo.append($table)
+        $demo.append($table);
         theTable = $table.DataTable(tableOptions);
-        await loadTable()
+        await loadTable();
     }
 }
 
@@ -57,7 +59,7 @@ async function loadTable(): Promise<void> {
     }
 
     // loads from SPARQL and then load all details in parallel
-    convertData(await loadFromSPARQL(currentEndpoint.url, getQuery(currentType.iri), false), useData)
+    convertData(await loadFromSPARQL(currentEndpoint.url, getQuery(currentType.iri), false), useData);
 }
 
 /**
@@ -70,7 +72,7 @@ async function loadTable(): Promise<void> {
 function convertData(data: any[], useData: (rows: string[][]) => void): void {
 
     data.forEach(row => {
-        const url = proxy(row.link.value)
+        const url = proxy(row.link.value);
         void $.ajax({
             url,
             dataType: "json",
@@ -79,18 +81,18 @@ function convertData(data: any[], useData: (rows: string[][]) => void): void {
                 if (result instanceof Array) {
                     result.forEach(item => {
                         useData([formatRow(item, url)]);
-                    })
+                    });
                 } else {
-                    useData([formatRow(result, url)])
+                    useData([formatRow(result, url)]);
                 }
             },
             error: (jqXHR, textStatus, errorThrown) => {
-                console.error("cteni z URL selhalo", url)
+                console.error("cteni z URL selhalo", url);
                 console.error(textStatus + "\n" + errorThrown + "\n" + JSON.stringify(jqXHR));
             }
-        })
+        });
 
-    })
+    });
 
     function formatRow(item, link): string[] {
         return [
@@ -98,7 +100,7 @@ function convertData(data: any[], useData: (rows: string[][]) => void): void {
             JSON.stringify(item.typ),
             JSON.stringify(item.popis.cs),
             linksForAppsToHTML(link, currentType, item).join(", ")
-        ]
+        ];
     }
 
 }
@@ -134,11 +136,11 @@ function proxy(url: string): string {
 function createSelectType(id: string, types: ObjectType[]): void {
     const appDiv = $(`#${id}`).append($("<div class='types'>"));
     appDiv.remove("select");
-    appDiv.append($("<label>").attr("for", `${id}_type_selector`).text("Typ dat"))
+    appDiv.append($("<label>").addClass("pr-2").attr("for", `${id}_type_selector`).text("Typ dat"));
     const select = $("<select>").attr("for", `${id}_type_selector`);
     types.forEach(item => {
         select.append($("<option>").attr("value", item.iri).text(item.název));
-    })
+    });
     appDiv.append(select);
     select.on("change", function (this: any) {
             currentType = types[this.selectedIndex];

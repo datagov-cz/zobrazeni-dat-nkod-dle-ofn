@@ -2,7 +2,7 @@ import $ from "jquery";
 import "datatables.net-bs4";
 import config from "./conf/config.json";
 import appConfig from "./conf/applications.json";
-import {linksForAppsToHTML, Endpoint, loadFromSPARQL, addExternalAppsToConfiguration, ObjectType} from "./common"
+import {linksForAppsToHTML, Endpoint, loadFromSPARQL, addExternalAppsToConfiguration, ObjectType} from "./common";
 
 
 function getQuery(iri: string): string {
@@ -28,7 +28,7 @@ WHERE {
       ?vydavatel_iri l-sgov-sbírka-111-2009-pojem:má-název-orgánu-veřejné-moci ?vydavatel
     }
 }
-`
+`;
 }
 
 
@@ -55,7 +55,7 @@ const dataTableOptions = {
  *
  */
 export async function renderBrowserApp(elementId: string): Promise<void> {
-    const newConfig = addExternalAppsToConfiguration(appConfig, config)
+    const newConfig = addExternalAppsToConfiguration(appConfig, config);
     console.info("Using enhanced config:", newConfig);
 
     loadOptionalURLendpoint();
@@ -63,14 +63,16 @@ export async function renderBrowserApp(elementId: string): Promise<void> {
     const $browser = $(elementId);
     if ($browser.length) {
 
+        $browser.append("<hr>");
         const row = $("<div>").addClass("row").attr("id", "row");
-        $browser.append(row)
+        $browser.append(row);
+        $browser.append("<hr>");
         createSelectEndpoint("row", newConfig.koncove_body);
         createSelectType("row", newConfig.typy_objektu as any);
 
         // create <table> and convert into DataTable
         const $table = $("<table>").addClass(["table", "table-striped", "table-bordered", "w-100"]);
-        $browser.append($table)
+        $browser.append($table);
         table = $table.DataTable(dataTableOptions);
 
         await loadTable();
@@ -78,7 +80,7 @@ export async function renderBrowserApp(elementId: string): Promise<void> {
 }
 
 async function loadTable(): Promise<void> {
-    const data = await loadFromSPARQL(currentEndpoint.url, getQuery(currentType.iri), true, valueRenderer)
+    const data = await loadFromSPARQL(currentEndpoint.url, getQuery(currentType.iri), true, valueRenderer);
     console.info("SPARQL data loaded:", data);
     table.clear().rows.add(data).draw();
 }
@@ -105,15 +107,15 @@ function loadOptionalURLendpoint() {
 function valueRenderer(row, key: string): string {
     if (row && key && row[key] && row[key].value) {
         // použití switch je v tomto místě zbytné, nicméně nabízí snadnou rozšiřitelnost do budoucna
-        const keyName = "zdroj"
+        const keyName = "zdroj";
         switch (key) {
             case keyName: {
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                 const element = row[keyName];
                 if (element && element.value) {
-                    return linksForAppsToHTML(element.value, currentType, null).join(", ")
+                    return linksForAppsToHTML(element.value, currentType, null).join(", ");
                 } else {
-                    console.error("unexpected result row format: ", JSON.stringify(row))
+                    console.error("unexpected result row format: ", JSON.stringify(row));
                 }
             }
             default: {
@@ -122,8 +124,8 @@ function valueRenderer(row, key: string): string {
             }
         }
     } else {
-        console.error("both argumente must be valid, defined", row, key)
-        return "Error while rendering the cell value"
+        console.error("both argumente must be valid, defined", row, key);
+        return "Error while rendering the cell value";
     }
 }
 
@@ -137,11 +139,11 @@ function valueRenderer(row, key: string): string {
 function createSelectEndpoint(id: string, endpoints: Endpoint[]): void {
     const $endpoints = $("<div class='endpoints col-sm m-2 p-3'>");
     $(`#${id}`).append($endpoints);
-    $endpoints.append($("<label>").attr("for", `${id}_catalog_selector`).text("Katalog"))
+    $endpoints.append($("<label>").addClass("pr-2").attr("for", `${id}_catalog_selector`).text("Katalog"));
     const select = $("<select>").attr("for", `${id}_catalog_selector`);
     endpoints.forEach(item => {
         select.append($("<option>").attr("value", item.url).text(item.název));
-    })
+    });
     $endpoints.append(select);
     select.on("change", function (this: any) {
             currentEndpoint = endpoints[this.selectedIndex];
@@ -161,11 +163,11 @@ function createSelectType(id: string, types: ObjectType[]): void {
     const $types = $("<div class='types col-sm m-2 p-3'>");
     $(`#${id}`).append($types);
     $types.remove("select");
-    $types.append($("<label>").attr("for", `${id}_type_selector`).text("Typ dat"))
+    $types.append($("<label>").addClass("pr-2").attr("for", `${id}_type_selector`).text("Typ dat"));
     const select = $("<select>").attr("for", `${id}_type_selector`);
     types.forEach(item => {
         select.append($("<option>").attr("value", item.iri).text(item.název));
-    })
+    });
     $types.append(select);
     select.on("change", function (this: any) {
             currentType = types[this.selectedIndex];

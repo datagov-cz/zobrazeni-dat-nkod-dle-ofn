@@ -199,7 +199,8 @@ module.exports = {
             }
         ],
         "use-isnan": "error",
-        "valid-typeof": "off"
+        "valid-typeof": "off",
+        "semi": ["error", "always"]
     },
     "overrides": [
         {

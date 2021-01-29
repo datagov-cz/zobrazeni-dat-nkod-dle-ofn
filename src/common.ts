@@ -50,7 +50,7 @@ export async function loadFromSPARQL(endpoint: string,
                                      query: string,
                                      headless = false,
                                      userRenderValueFn?: (row, key: string) => (string)): Promise<any[]> {
-    console.info("Starting loading data from ", endpoint, query)
+    console.info("Starting loading data from ", endpoint, query);
 
     // výchozí vykreslovač prostě použije výchozí hodnoty
     const defaultRenderValueFn = (row, key: string) => JSON.stringify(row[key].value);
@@ -59,26 +59,26 @@ export async function loadFromSPARQL(endpoint: string,
     return new Promise<any[]>((resolve, reject) => {
         // obaluje volání SparqlClient do Promise - moderní přístup v TypeScriptu
         void new SparqlClient({endpointUrl: endpoint}).query.select(query).then(stream => {
-            const accumulator: any[] = []
+            const accumulator: any[] = [];
 
             stream.on("data", row => {
                 if (headless) {
                     const item = Object.keys(row).map(key => renderValueFn(row, key));
-                    accumulator.push(item)
+                    accumulator.push(item);
                 } else {
-                    accumulator.push(row)
+                    accumulator.push(row);
                 }
-            })
+            });
 
             stream.on("end", () => {
                 resolve(accumulator);
-            })
+            });
 
             stream.on("error", err => {
                 reject(err);
-            })
+            });
 
-        })
+        });
     });
 
 }
@@ -93,7 +93,7 @@ export function linksForAppsToHTML(link: string, currentType: ObjectType, payloa
                 .replace("${0}", link)
                 .replace("${1}", currentType.iri)
                 .replace("${2}", "Data ze zdroje dle OFN - " + currentType.název)
-                .replace("${3}", (payload && payload.iri) ? payload.iri : "")
+                .replace("${3}", (payload && payload.iri) ? payload.iri : "");
             return linkToHTML(application, `${application.url}?${uriComponent}`);
         });
     }
@@ -114,10 +114,10 @@ export function addExternalAppsToConfiguration(appConf: ExternalApp[], conf: Con
     conf.typy_objektu.forEach(type => {
         appConf.filter(item => item.zpracovává.indexOf(type.iri) !== -1).forEach(app => {
             if (!type.aplikace) {
-                type.aplikace = []
+                type.aplikace = [];
             }
-            type.aplikace.push(app)
-        })
-    })
+            type.aplikace.push(app);
+        });
+    });
     return conf;
 }
