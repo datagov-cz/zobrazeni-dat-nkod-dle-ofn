@@ -1,12 +1,20 @@
 {
   "koncove_body": [
     {
-      "název": "Testovací databáze OD - oha03.mvcr.gov.cz",
+      "název": "Falešný NKOD",
       "url": "https://oha03.mvcr.gov.cz/sparql"
     },
     {
-      "název": "Databáze otevřených dat  - data.gov.cz",
-      "url": "https://data.gov.cz/sparkl"
+      "název": "Vývojový NKOD",
+      "url": "https://dev.nkod.opendata.cz/sparql"
+    },
+    {
+      "název": "Testovací NKOD",
+      "url": "https://pod-test.mvcr.gov.cz/sparql"
+    },
+    {
+      "název": "Národní katalog otevřených dat",
+      "url": "https://data.gov.cz/sparql"
     }
   ],
   "typy_objektu": [
