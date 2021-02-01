@@ -44,7 +44,7 @@ export async function renderDemoApp(elementId: string) {
     if ($demo.length) {
         $demo.append("<hr>");
         // eslint-disable-next-line max-len
-        $demo.append(`<p>Zdroj dat: <strong>${newConfig.koncove_body[0].název}</strong> (<a href="${newConfig.koncove_body[0].url}">${newConfig.koncove_body[0].url}</a>)</p>`);
+        $demo.append(`<p>Zobrazena data z: <strong>${newConfig.koncove_body[0].název}</strong> (<a href="${newConfig.koncove_body[0].url}">${newConfig.koncove_body[0].url}</a>)</p>`);
         createSelectType("demo", newConfig.typy_objektu);
         $demo.append("<hr>");
         const $table = $("<table>").attr("id", tableId).addClass(["table", "table-striped", "table-bordered", "w-100"]);
@@ -74,7 +74,7 @@ async function loadTable(): Promise<void> {
 function convertData(data: any[], useData: (rows: string[][]) => void): void {
 
     data.forEach(row => {
-        const url = row.link.value;
+        const url = proxy(row.link.value);
         void $.ajax({
             url,
             dataType: "json",
@@ -117,6 +117,16 @@ function loadOptionalURLtype() {
         config.typy_objektu.unshift({název: "z parametru typ: " + String(type), iri: String(type)});
         currentType = config.typy_objektu[0];
     }
+}
+
+// TODO smazat proxy v produkcnim kodu, vyresit pro dev a prod
+function proxy(url: string): string {
+    // if (url.startsWith("https://gitlab.com")) {
+    //     return "https://api.allorigins.win/get?url=" + encodeURIComponent(url)
+    // } else {
+    //     return url;
+    // }
+    return url.replace("https://gitlab.com", "http://localhost:8010/proxy");
 }
 
 /**
