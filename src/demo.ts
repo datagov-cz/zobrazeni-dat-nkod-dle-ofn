@@ -33,6 +33,11 @@ const tableOptions = {
 };
 
 
+/**
+ * Vykreslí obsah demo aplikace do elementu se zvoleným id
+ *
+ * @param elementId id elementu, do kterého se má vykreslit obsah
+ */
 export async function renderDemoApp(elementId: string) {
     const newConfig = addExternalAppsToConfiguration(appConfig, config);
     const tableId = "thetable";
@@ -55,6 +60,9 @@ export async function renderDemoApp(elementId: string) {
 }
 
 
+/**
+ * Načte obsah tabulky podle aktuální konfigurace a stavu ovládacích prvků
+ */
 async function loadTable(): Promise<void> {
     function useData(rows: string[][]): void {
         theTable.rows.add(rows).draw();
@@ -74,7 +82,7 @@ async function loadTable(): Promise<void> {
 function convertData(data: any[], useData: (rows: string[][]) => void): void {
 
     data.forEach(row => {
-        const url = proxy(row.link.value);
+        const url = row.link.value;
         void $.ajax({
             url,
             dataType: "json",
@@ -117,16 +125,6 @@ function loadOptionalURLtype() {
         config.typy_objektu.unshift({název: "z parametru typ: " + String(type), iri: String(type)});
         currentType = config.typy_objektu[0];
     }
-}
-
-// TODO smazat proxy v produkcnim kodu, vyresit pro dev a prod
-function proxy(url: string): string {
-    // if (url.startsWith("https://gitlab.com")) {
-    //     return "https://api.allorigins.win/get?url=" + encodeURIComponent(url)
-    // } else {
-    //     return url;
-    // }
-    return url.replace("https://gitlab.com", "http://localhost:8010/proxy");
 }
 
 /**
