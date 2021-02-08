@@ -1,9 +1,7 @@
-# zobrazeni-dat-nkod-dle-ofn
-Jedná se o soubor ukázkových aplikací v [typescriptu](https://cs.wikipedia.org/wiki/TypeScript), které umí zobrazovat otevřená data.
-
-TODO: užitečné informace, odkazy, jak to patří do celku  
+zobrazeni-dat-nkod-dle-ofn je repozitář pro několik ukázkových aplikací pro čtení a zobrazení dat otevřených dat z katalogu NKOD, které umí zobrazovat otevřená data. Hlavní zdroj informací o projektu je [wiki](https://github.com/opendata-mvcr/zobrazeni-dat-nkod-dle-ofn/wiki).
 
 ## Lokální vývoj, spuštění
+Aplikace je napsaná v [typescriptu](https://cs.wikipedia.org/wiki/TypeScript), využívá node.js a NPM
 
 * Ujistěte se, že máte nainstalován program nodejs a npm.
 Použijte [node.js](https://nodejs.org/en/download/) ve verzi 14+ (nainstalujte, pokud nemáte z odkazu). Ověřte instalaci spuštěním příkazu `node` a příkazu `npm` 
