@@ -12,6 +12,7 @@ export declare type ObjectType = {
     název: string;
     iri: string;
     aplikace?: ExternalApp[];
+    iri_objektu?: string;
 };
 /**
  * Typ pro konfiguraci
