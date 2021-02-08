@@ -14,7 +14,8 @@ export type Endpoint = {
 export type ObjectType = {
     název: string;
     iri: string;
-    aplikace?: ExternalApp[]
+    aplikace?: ExternalApp[];
+    iri_objektu?: string;
 }
 /**
  * Typ pro konfiguraci

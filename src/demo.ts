@@ -1,6 +1,6 @@
 import $ from "jquery";
 import "datatables.net-bs4";
-import config from "./conf/config.json";
+import config from "./conf/config_demo.json";
 import {linksForAppsToHTML, Endpoint, loadFromSPARQL, addExternalAppsToConfiguration, ObjectType} from "./common";
 import appConfig from "./conf/applications.json";
 

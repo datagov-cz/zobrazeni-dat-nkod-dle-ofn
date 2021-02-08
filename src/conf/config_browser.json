@@ -1,0 +1,47 @@
+{
+  "koncove_body": [
+    {
+      "název": "Falešný NKOD",
+      "url": "https://oha03.mvcr.gov.cz/sparql"
+    },
+    {
+      "název": "Vývojový NKOD",
+      "url": "https://dev.nkod.opendata.cz/sparql"
+    },
+    {
+      "název": "Testovací NKOD",
+      "url": "https://pod-test.mvcr.gov.cz/sparql"
+    },
+    {
+      "název": "Národní katalog otevřených dat",
+      "url": "https://data.gov.cz/sparql"
+    }
+  ],
+  "typy_objektu": [
+    {
+      "název": "Turistické cíle",
+      "iri_objektu": "https://ofn.gov.cz/turistické-cíle/2020-07-01/",
+      "iri": "soubor cílů"
+    },
+    {
+      "název": "Sportoviště",
+      "iri_objektu": "https://ofn.gov.cz/sportoviště/2020-07-01/",
+      "iri": "soubor cílů"
+    },
+    {
+      "název": "Aktuality",
+      "iri_objektu": "https://ofn.gov.cz/aktuality/2020-07-01/",
+      "iri": "soubor cílů"
+    },
+    {
+      "název": "Události",
+      "iri_objektu": "https://ofn.gov.cz/události/2020-07-01/",
+      "iri": "soubor cílů"
+    },
+    {
+      "název": "Registr práv a povinností",
+      "iri_objektu": "https://ofn.gov.cz/registr-práv-a-povinností/",
+      "iri": "https://soubor cílů/"
+    }
+  ]
+}

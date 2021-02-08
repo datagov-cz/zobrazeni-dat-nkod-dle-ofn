@@ -1,11 +1,11 @@
 import $ from "jquery";
 import "datatables.net-bs4";
-import config from "./conf/config.json";
+import config from "./conf/config_browser.json";
 import appConfig from "./conf/applications.json";
 import {linksForAppsToHTML, Endpoint, loadFromSPARQL, addExternalAppsToConfiguration, ObjectType} from "./common";
 
 
-function getQuery(iri: string): string {
+function getQuery(objectIri: string): string {
     return `
 PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX dcat: <http://www.w3.org/ns/dcat#>
@@ -15,7 +15,7 @@ WHERE {
 
     ?s a dcat:Dataset ;
         dcat:distribution ?distribuce ;
-        dcterms:conformsTo <${iri}> ;
+        dcterms:conformsTo <${objectIri}> ;
         dcterms:title ?název ;
         dcterms:description ?popis;
         dcterms:publisher ?vydavatel_iri .
@@ -80,9 +80,13 @@ export async function renderBrowserApp(elementId: string): Promise<void> {
 }
 
 async function loadTable(): Promise<void> {
-    const data = await loadFromSPARQL(currentEndpoint.url, getQuery(currentType.iri), true, valueRenderer);
-    console.info("SPARQL data loaded:", data);
-    table.clear().rows.add(data).draw();
+    if (currentType.iri_objektu) {
+        const data = await loadFromSPARQL(currentEndpoint.url, getQuery(currentType.iri_objektu), true, valueRenderer);
+        console.info("SPARQL data loaded:", data);
+        table.clear().rows.add(data).draw();
+    } else {
+        console.error("iri_objektu nenalezeno v konfiguraci");
+    }
 }
 
 /**
