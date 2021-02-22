@@ -99,7 +99,7 @@ module.exports = {
         "@typescript-eslint/naming-convention": [
             "error",
             { "selector": "typeProperty", "format": ["snake_case"] },
-            { "selector": "classProperty", "format": ["snake_case"] }
+            { "selector": "classProperty", "format": ["snake_case", "camelCase"] }
         ],
         "complexity": "off",
         "constructor-super": "error",
