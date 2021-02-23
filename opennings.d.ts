@@ -51,3 +51,4 @@ export declare type CasovaSpecifikace = {
     výjimka?: CasovaSpecifikace[];
 };
 export declare function toString(input: CasovaSpecifikace): Promise<string>;
+export declare function isOpen(timeSpecs: CasovaSpecifikace[], moment: Date): boolean;
