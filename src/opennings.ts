@@ -1,4 +1,5 @@
 import {loadFromSPARQL} from "./common";
+import {getDay} from "date-fns";
 
 export type Vec = {
     iri: string;
@@ -139,9 +140,62 @@ export function toString(input: CasovaSpecifikace): Promise<string> {
                 counter++;
             });
 
-            // console.debug("pattern", pattern);
             resolve("Otevírací doba pro " + input.věc.název + ":" + pattern.performReplace());
 
         });
     });
+}
+
+function presentFields(casovaSpecifikace: CasovaSpecifikace): string[] {
+    return Object.keys(casovaSpecifikace).filter(key => casovaSpecifikace[key].length && casovaSpecifikace[key].length > 0);
+}
+
+export function isOpen(timeSpecs: CasovaSpecifikace[], moment: Date): boolean {
+    function evaluate(field: string, mmnt: Date, casovaSpecifikace: CasovaSpecifikace): boolean {
+        switch (field) {
+            case "den_v_týdnu":
+                const daysOfWeek = [
+                    "https://data.mvcr.gov.cz/zdroj/číselníky/dny-v-týdnu/položky/neděle",
+                    "https://data.mvcr.gov.cz/zdroj/číselníky/dny-v-týdnu/položky/pondělí",
+                    "https://data.mvcr.gov.cz/zdroj/číselníky/dny-v-týdnu/položky/úterý",
+                    "https://data.mvcr.gov.cz/zdroj/číselníky/dny-v-týdnu/položky/středa",
+                    "https://data.mvcr.gov.cz/zdroj/číselníky/dny-v-týdnu/položky/čtvrtek",
+                    "https://data.mvcr.gov.cz/zdroj/číselníky/dny-v-týdnu/položky/pátek",
+                    "https://data.mvcr.gov.cz/zdroj/číselníky/dny-v-týdnu/položky/sobota",
+                ];
+                // @ts-ignore
+                return casovaSpecifikace.den_v_týdnu?.map(dayOfWeek => daysOfWeek.indexOf(dayOfWeek.iri))
+                    .indexOf(getDay(moment)) > -1;
+                break;
+            case "časová_doba":
+                break;
+            case "časový_interval":
+                break;
+            case "časový_okamžik":
+                break;
+            case "časová_platnost":
+                break;
+            case "časové_období":
+                break;
+            case "frekvence":
+                break;
+            case "jiná_časová_specifikace":
+                break;
+            case "specifická_frekvence":
+                break;
+            case "výjimka":
+                break;
+        }
+        return false;
+    }
+
+    if (timeSpecs.length === 1) {
+        const presentFields1 = presentFields(timeSpecs[0]);
+        presentFields1.map(field => evaluate(field, moment, timeSpecs[0])).reduce((previousValue, currentValue) => previousValue && currentValue);
+        return true;
+    }
+    if (timeSpecs.length > 1) {
+        return timeSpecs.map(ts => isOpen([ts], moment)).reduce((previousValue, currentValue) => previousValue || currentValue);
+    }
+    return false;
 }
