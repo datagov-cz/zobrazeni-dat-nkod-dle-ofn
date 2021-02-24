@@ -59,6 +59,20 @@ export type CasovaSpecifikaceType = {
 
 }
 
+enum Properties {
+    počet_opakování = "počet_opakování",
+    den_v_týdnu = "den_v_týdnu",
+    časová_doba = "časová_doba",
+    časový_interval = "časový_interval",
+    časový_okamžik = "časový_okamžik",
+    časová_platnost = "časová_platnost",
+    časové_období = "časové_období",
+    frekvence = "frekvence",
+    jiná_časová_specifikace = "jiná_časová_specifikace",
+    specifická_frekvence = "specifická_frekvence",
+    výjimka = "výjimka"
+}
+
 export class DenVTydnu {
     den_v_týdnu: DenVTydnuType;
 
@@ -87,9 +101,9 @@ export class CasovaSpecifikace {
     }
 
     public isOpen(moment: Date): boolean {
-        function evaluate(field: string, mmnt: Date, casovaSpecifikace: CasovaSpecifikaceType): boolean {
-            switch (field) {
-                case "den_v_týdnu":
+        function evaluate(property: Properties, mmnt: Date, casovaSpecifikace: CasovaSpecifikaceType): boolean {
+            switch (property) {
+                case Properties.den_v_týdnu:
                     const daysOfWeek = [
                         "https://data.mvcr.gov.cz/zdroj/číselníky/dny-v-týdnu/položky/neděle",
                         "https://data.mvcr.gov.cz/zdroj/číselníky/dny-v-týdnu/položky/pondělí",
@@ -99,34 +113,33 @@ export class CasovaSpecifikace {
                         "https://data.mvcr.gov.cz/zdroj/číselníky/dny-v-týdnu/položky/pátek",
                         "https://data.mvcr.gov.cz/zdroj/číselníky/dny-v-týdnu/položky/sobota",
                     ];
-                    // @ts-ignore
-                    return casovaSpecifikace.den_v_týdnu?.map(dayOfWeek => daysOfWeek.indexOf(dayOfWeek.iri))
+                    return casovaSpecifikace.den_v_týdnu!.map(dayOfWeek => daysOfWeek.indexOf(dayOfWeek.iri))
                         .indexOf(getDay(moment)) > -1;
                     break;
-                case "časová_doba":
+                case Properties.časová_doba:
                     break;
-                case "časový_interval":
+                case Properties.časový_interval:
                     break;
-                case "časový_okamžik":
+                case Properties.časový_okamžik:
                     break;
-                case "časová_platnost":
+                case Properties.časová_platnost:
                     break;
-                case "časové_období":
+                case Properties.časové_období:
                     break;
-                case "frekvence":
+                case Properties.frekvence:
                     break;
-                case "jiná_časová_specifikace":
+                case Properties.jiná_časová_specifikace:
                     break;
-                case "specifická_frekvence":
+                case Properties.specifická_frekvence:
                     break;
-                case "výjimka":
+                case Properties.výjimka:
                     break;
             }
             return false;
         }
 
         return this.presentFields()
-            .map(field => evaluate(field, moment, this.casovaSpecifikace))
+            .map(field => evaluate(field as Properties, moment, this.casovaSpecifikace))
             .reduce((previousValue, currentValue) => previousValue && currentValue);
 
     }
@@ -143,7 +156,7 @@ export class CasovaSpecifikace {
                     counter++;
                 });
 
-                resolve("Otevírací doba pro " + this.casovaSpecifikace.věc.název + ":" + pattern.performReplace());
+                resolve(`Otevírací doba pro ${this.casovaSpecifikace.věc.název}\n ${pattern.performReplace()}`);
             });
         });
     }
@@ -153,22 +166,15 @@ export class CasovaSpecifikace {
     }
 
     createPattern(): Pattern {
-        function hasDays(data: CasovaSpecifikaceType) {
-            return data.den_v_týdnu && data.den_v_týdnu.length > 0;
-        }
 
-        function hasFrequncy(data: CasovaSpecifikaceType) {
-            return data.frekvence && data.frekvence.length > 0;
-        }
-
-        function hasSpecificFrequncy(data: CasovaSpecifikaceType) {
-            return data.specifická_frekvence && data.specifická_frekvence.length > 0;
+        function hasProperty(data: CasovaSpecifikaceType, property: Properties) {
+            return Array.isArray(data[property]) && (data[property] as any[]).length > 0;
         }
 
         if (this.casovaSpecifikace
-            && hasDays(this.casovaSpecifikace)
-            && !hasFrequncy(this.casovaSpecifikace)
-            && !hasSpecificFrequncy(this.casovaSpecifikace)) {
+            && hasProperty(this.casovaSpecifikace, Properties.den_v_týdnu)
+            && !hasProperty(this.casovaSpecifikace, Properties.frekvence)
+            && !hasProperty(this.casovaSpecifikace, Properties.specifická_frekvence)) {
             const daysOfWeek: DenVTydnuType[] = this.casovaSpecifikace.den_v_týdnu || [{iri: "undefined"}];
             const pattern = new Pattern(`V těchto dnech: ${daysOfWeek?.map(data => `<${data.iri}>`).join(", ")}`);
 

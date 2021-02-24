@@ -11,7 +11,7 @@ test("toString", async () => {
     }
 
     const actual = await new CasovaSpecifikace(input).toString();
-    expect(actual).toEqual("Otevírací doba pro testovací název:V těchto dnech: Pondělí, Úterý");
+    expect(actual).toEqual("Otevírací doba pro testovací název\n V těchto dnech: Pondělí, Úterý");
 })
 
 test("isOpen", () => {
