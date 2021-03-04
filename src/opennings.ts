@@ -93,6 +93,12 @@ export class DenVTydnu {
     }
 }
 
+type IriPromise = {
+    iri: string;
+    promise: Promise<string>
+    resolved: string;
+}
+
 export class CasovaSpecifikace {
     casovaSpecifikace: CasovaSpecifikaceType;
 
@@ -100,7 +106,8 @@ export class CasovaSpecifikace {
         this.casovaSpecifikace = casovaSpecifikace;
     }
 
-    public isOpen(moment: Date): boolean {
+
+    public validMoment(moment: Date): boolean {
         function evaluate(property: Properties, mmnt: Date, casovaSpecifikace: CasovaSpecifikaceType): boolean {
             switch (property) {
                 case Properties.den_v_týdnu:
@@ -156,49 +163,78 @@ export class CasovaSpecifikace {
                     counter++;
                 });
 
-                resolve(`Otevírací doba pro ${this.casovaSpecifikace.věc.název}\n ${pattern.performReplace()}`);
+                resolve(pattern.performReplace());
+                // resolve(`Otevírací doba pro ${this.casovaSpecifikace.věc.název}\n ${pattern.performReplace()}`);
             });
+
+            resolve(pattern.pattern);
         });
     }
+
 
     public presentFields(): string[] {
         return Object.keys(this.casovaSpecifikace).filter(key => this.casovaSpecifikace[key].length && this.casovaSpecifikace[key].length > 0);
     }
 
+    hasProperty(property: Properties) {
+        if (property === Properties.počet_opakování) {
+            return this.casovaSpecifikace[property] !== undefined;
+        } else {
+            return Array.isArray(this.casovaSpecifikace[property]) && (this.casovaSpecifikace[property] as any[]).length > 0;
+        }
+    }
+
     createPattern(): Pattern {
 
-        function hasProperty(data: CasovaSpecifikaceType, property: Properties) {
-            return Array.isArray(data[property]) && (data[property] as any[]).length > 0;
-        }
-
-        if (this.casovaSpecifikace
-            && hasProperty(this.casovaSpecifikace, Properties.den_v_týdnu)
-            && !hasProperty(this.casovaSpecifikace, Properties.frekvence)
-            && !hasProperty(this.casovaSpecifikace, Properties.specifická_frekvence)) {
+        // dny v tydnu
+        if (this.hasProperty(Properties.den_v_týdnu)
+            && !this.hasProperty(Properties.frekvence)
+            && !this.hasProperty(Properties.specifická_frekvence)) {
             const daysOfWeek: DenVTydnuType[] = this.casovaSpecifikace.den_v_týdnu || [{iri: "undefined"}];
-            const pattern = new Pattern(`V těchto dnech: ${daysOfWeek?.map(data => `<${data.iri}>`).join(", ")}`);
+            const pattern = new Pattern(`V těchto dnech: ${(daysOfWeek.map(data => `<${data.iri}>`).join(", "))}`);
 
-            daysOfWeek?.forEach(dayOfWeek => {
+            daysOfWeek.forEach(dayOfWeek => {
                 pattern.addResource(`<${dayOfWeek.iri}>`, new DenVTydnu(dayOfWeek).denotateDayOfWeek());
             });
             return pattern;
         }
 
-        return new Pattern("##### !!!");
+        // pocet opakovani
+        if (this.hasProperty(Properties.počet_opakování)) {
+            let times = `${String(this.casovaSpecifikace.počet_opakování)}×`;
+            switch (this.casovaSpecifikace.počet_opakování) {
+                case 1:
+                    times = "jednou";
+                    break;
+                case 2:
+                    times = "dvakrát";
+                    break;
+                case 3:
+                    times = "třikrát";
+                    break;
+                case 4:
+                    times = "čtyřikrát";
+                    break;
+                case 5:
+                    times = "pětkrát";
+                    break;
+            }
+            // TODO přidat frekvence
+            if (this.hasProperty(Properties.časový_interval)) {
+                // TODO pokracovat tu
+            }
+
+            return new Pattern("Opakuje se " + times);
+        }
+
+        return new Pattern("Missing pattern !!!, FIXME");
 
     }
 
-
 }
 
 
-type IriPromise = {
-    iri: string;
-    promise: Promise<string>
-    resolved: string;
-}
-
-class Pattern {
+export class Pattern {
     pattern = "";
     iriPromises: IriPromise[] = [];
 
@@ -222,11 +258,15 @@ class Pattern {
     }
 }
 
-
-export function isOpen(timeSpecs: CasovaSpecifikace[], moment: Date): boolean {
+export function isInSpecifications(timeSpecs: CasovaSpecifikace[], moment: Date): boolean {
     if (timeSpecs.length > 0) {
-        return timeSpecs.map(ts => ts.isOpen(moment)).reduce((previousValue, currentValue) => previousValue || currentValue);
+        return timeSpecs.map(ts => ts.validMoment(moment)).reduce((previousValue, currentValue) => previousValue || currentValue);
     } else {
         return false;
     }
+}
+
+export async function specToString(input: string): Promise<string> {
+    const parsed = JSON.parse(input);
+    return await new CasovaSpecifikace(parsed).toString();
 }
