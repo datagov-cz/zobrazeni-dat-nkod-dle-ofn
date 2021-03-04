@@ -20,12 +20,20 @@
         crossorigin="anonymous"></script>
 <script type="module" src="bundle.js"></script>
 <div class="container-fluid p-3">
-    <h1>OFN - otevírací doby</h1>
+    <h1>Časová specifikace podle OFN </h1>
     <div>
-        <label for="input">
-        otevírací doba - zadejte vstup
-        </label>
-        <textarea id="input"></textarea>
+        <label for="input"></label>
+        <textarea id="input" name="input"  rows="20" cols="150">{
+        "věc": {
+            "název": "testovací název",
+            "iri": "iri-vec"
+        },
+        "počet_opakování": 10
+    }
+</textarea>
+        <button onclick="bundle.specificationToString($('#input').val(), $('#result'))" value="Process" name="Process">Zkusit přeložit do přirozeného jazyka</button>
+        <hr>
+        <div id="result"></div>
     </div>
 </div>
 </body>

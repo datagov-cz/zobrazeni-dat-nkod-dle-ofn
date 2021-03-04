@@ -50,30 +50,45 @@ export declare type CasovaSpecifikaceType = {
     specifická_frekvence?: SpecifickaFrekvence[];
     výjimka?: CasovaSpecifikaceType[];
 };
+declare enum Properties {
+    počet_opakování = "po\u010Det_opakov\u00E1n\u00ED",
+    den_v_týdnu = "den_v_t\u00FDdnu",
+    časová_doba = "\u010Dasov\u00E1_doba",
+    časový_interval = "\u010Dasov\u00FD_interval",
+    časový_okamžik = "\u010Dasov\u00FD_okam\u017Eik",
+    časová_platnost = "\u010Dasov\u00E1_platnost",
+    časové_období = "\u010Dasov\u00E9_obdob\u00ED",
+    frekvence = "frekvence",
+    jiná_časová_specifikace = "jin\u00E1_\u010Dasov\u00E1_specifikace",
+    specifická_frekvence = "specifick\u00E1_frekvence",
+    výjimka = "v\u00FDjimka"
+}
 export declare class DenVTydnu {
     den_v_týdnu: DenVTydnuType;
     constructor(den_v_týdnu: DenVTydnuType);
     denotateDayOfWeek(): Promise<string>;
-}
-export declare class CasovaSpecifikace {
-    casovaSpecifikace: CasovaSpecifikaceType;
-    constructor(casovaSpecifikace: CasovaSpecifikaceType);
-    isOpen(moment: Date): boolean;
-    toString(): Promise<string>;
-    presentFields(): string[];
-    createPattern(): Pattern;
 }
 declare type IriPromise = {
     iri: string;
     promise: Promise<string>;
     resolved: string;
 };
-declare class Pattern {
+export declare class CasovaSpecifikace {
+    casovaSpecifikace: CasovaSpecifikaceType;
+    constructor(casovaSpecifikace: CasovaSpecifikaceType);
+    validMoment(moment: Date): boolean;
+    toString(): Promise<string>;
+    presentFields(): string[];
+    hasProperty(property: Properties): boolean;
+    createPattern(): Pattern;
+}
+export declare class Pattern {
     pattern: string;
     iriPromises: IriPromise[];
     constructor(pattern: string);
     addResource(iri: string, resolver: Promise<string>): void;
     performReplace(): string;
 }
-export declare function isOpen(timeSpecs: CasovaSpecifikace[], moment: Date): boolean;
+export declare function isInSpecifications(timeSpecs: CasovaSpecifikace[], moment: Date): boolean;
+export declare function specToString(input: string): Promise<string>;
 export {};
