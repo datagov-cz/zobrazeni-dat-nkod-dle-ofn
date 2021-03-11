@@ -14,6 +14,7 @@
     <title>OFN - demo aplikace</title>
 </head>
 <body>
+<script src="lib/jquery.datetimepicker.full.min.js" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-3.5.1.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
@@ -23,7 +24,7 @@
     <h1>Časová specifikace podle OFN </h1>
     <div>
         <label for="input"></label>
-        <textarea id="input" name="input"  rows="20" cols="150">{
+        <textarea id="input" name="input" rows="20" cols="150">{
         "věc": {
             "název": "testovací název",
             "iri": "iri-vec"
@@ -31,7 +32,25 @@
         "počet_opakování": 10
     }
 </textarea>
-        <button onclick="bundle.specificationToString($('#input').val(), $('#result'))" value="Process" name="Process">Zkusit přeložit do přirozeného jazyka</button>
+        <div class="container">
+            <div class="row">
+                <div>
+                    <button onclick="bundle.specificationToString($('#input').val(), $('#result'))"
+                            value="Process"
+                            name="Process">Zkusit přeložit do přirozeného jazyka
+                    </button>
+                </div>
+                <div>
+                    <div id="datetimepicker"><label>zadejte datum rrrr-mm-dd</label></div>
+                    <input type="text" id="datetimeinput"></input>
+
+                    <button onclick="bundle.contains($('#input').val(), Date.parse($('#datetimeinput').val()), $('#result'))"
+                            value="Process"
+                            name="Process">Odpovídá vybraný čas specifikaci?
+                    </button>
+                </div>
+            </div>
+        </div>
         <hr>
         <div id="result"></div>
     </div>

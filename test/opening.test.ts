@@ -29,7 +29,7 @@ test("toString - opakování", async () => {
     expect(actual).toEqual("Opakuje se 10×");
 })
 
-test("isOpen", () => {
+test("contains - dny v týdnu", () => {
     const input: CasovaSpecifikaceType = {
         věc: {
             název: "testovací název",
@@ -38,4 +38,15 @@ test("isOpen", () => {
         den_v_týdnu: [{iri: "https://data.mvcr.gov.cz/zdroj/číselníky/dny-v-týdnu/položky/pondělí"}, {iri: "https://data.mvcr.gov.cz/zdroj/číselníky/dny-v-týdnu/položky/úterý"}]
     }
     expect(isInSpecifications([new CasovaSpecifikace(input)], new Date(2021, 2, 23))).toEqual(true); // úterý
+})
+
+test("contains - časový okamžik", () => {
+    const input: CasovaSpecifikaceType = {
+        věc: {
+            název: "testovací název",
+            iri: "<iri-vec>"
+        },
+        "časový_okamžik": [{datum: "2021-02-23"}]
+    }
+    expect(isInSpecifications([new CasovaSpecifikace(input)], new Date(2021, 1, 24))).toEqual(true); // úterý
 })

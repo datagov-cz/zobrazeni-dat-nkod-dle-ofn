@@ -1,6 +1,6 @@
 // eslint-disable-next-line max-classes-per-file
 import {loadFromSPARQL} from "./common";
-import {getDay} from "date-fns";
+import {add, getDay, isAfter, isBefore, sub} from "date-fns";
 
 export type Vec = {
     iri: string;
@@ -17,8 +17,8 @@ export type CasovyInterval = {
     konec: string;
 }
 export type CasovyOkamzik = {
-    datum: string;
-    datum_a_čas: string;
+    datum?: string;
+    datum_a_čas?: string;
 }
 export type CasoveObdobi = {
     iri: string;
@@ -108,6 +108,7 @@ export class CasovaSpecifikace {
 
 
     public validMoment(moment: Date): boolean {
+
         function evaluate(property: Properties, mmnt: Date, casovaSpecifikace: CasovaSpecifikaceType): boolean {
             switch (property) {
                 case Properties.den_v_týdnu:
@@ -128,6 +129,19 @@ export class CasovaSpecifikace {
                 case Properties.časový_interval:
                     break;
                 case Properties.časový_okamžik:
+                    // @ts-ignore
+                    return (casovaSpecifikace.časový_okamžik.filter(it => {
+                        console.log(it, mmnt);
+                        if (it.datum && it.datum.length>0) {
+                            const since = sub(Date.parse(it.datum), {seconds: 1});
+                            console.log(since);
+                            const to = add(since, {days: 1, seconds: 1});
+                            console.log(to);
+                            return isAfter(mmnt, since) && isBefore(mmnt, to);
+                        } else {
+                            return false;
+                        }
+                    }).length > 0);
                     break;
                 case Properties.časová_platnost:
                     break;
@@ -145,7 +159,11 @@ export class CasovaSpecifikace {
             return false;
         }
 
-        return this.presentFields()
+        const noEmptyArrays = this.presentNoEmptyArrays();
+        if (noEmptyArrays.length === 0) {
+            throw new Error("Nelze vyhodnotit");
+        }
+        return noEmptyArrays
             .map(field => evaluate(field as Properties, moment, this.casovaSpecifikace))
             .reduce((previousValue, currentValue) => previousValue && currentValue);
 
@@ -164,7 +182,6 @@ export class CasovaSpecifikace {
                 });
 
                 resolve(pattern.performReplace());
-                // resolve(`Otevírací doba pro ${this.casovaSpecifikace.věc.název}\n ${pattern.performReplace()}`);
             });
 
             resolve(pattern.pattern);
@@ -172,8 +189,9 @@ export class CasovaSpecifikace {
     }
 
 
-    public presentFields(): string[] {
-        return Object.keys(this.casovaSpecifikace).filter(key => this.casovaSpecifikace[key].length && this.casovaSpecifikace[key].length > 0);
+    public presentNoEmptyArrays(): string[] {
+        return Object.keys(this.casovaSpecifikace)
+            .filter(key => Array.isArray(this.casovaSpecifikace[key]) && this.casovaSpecifikace[key].length > 0);
     }
 
     hasProperty(property: Properties) {
@@ -260,13 +278,24 @@ export class Pattern {
 
 export function isInSpecifications(timeSpecs: CasovaSpecifikace[], moment: Date): boolean {
     if (timeSpecs.length > 0) {
-        return timeSpecs.map(ts => ts.validMoment(moment)).reduce((previousValue, currentValue) => previousValue || currentValue);
+        const booleans = timeSpecs.map(ts => ts.validMoment(moment));
+        return booleans.reduce((previousValue, currentValue) => previousValue || currentValue);
     } else {
         return false;
     }
 }
 
-export async function specToString(input: string): Promise<string> {
+export function isInJSONSpecifications(input: string, moment: Date): boolean {
+    const parsed = JSON.parse(input);
+    if (Array.isArray(parsed)) {
+        const timeSpecs = parsed.map(it => new CasovaSpecifikace(it));
+        return isInSpecifications(timeSpecs, moment);
+    } else {
+        return isInSpecifications([new CasovaSpecifikace(parsed)], moment);
+    }
+}
+
+export async function jsonSpecToString(input: string): Promise<string> {
     const parsed = JSON.parse(input);
     return await new CasovaSpecifikace(parsed).toString();
 }
