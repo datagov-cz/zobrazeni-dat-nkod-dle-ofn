@@ -1,6 +1,7 @@
 // eslint-disable-next-line max-classes-per-file
 import {loadFromSPARQL} from "./common";
-import {add, getDay, isAfter, isBefore, sub} from "date-fns";
+import {add, format, getDay, isAfter, isBefore, sub} from "date-fns";
+import {cs} from "date-fns/locale";
 
 export type Vec = {
     iri: string;
@@ -129,14 +130,10 @@ export class CasovaSpecifikace {
                 case Properties.časový_interval:
                     break;
                 case Properties.časový_okamžik:
-                    // @ts-ignore
-                    return (casovaSpecifikace.časový_okamžik.filter(it => {
-                        console.log(it, mmnt);
-                        if (it.datum && it.datum.length>0) {
+                    return (casovaSpecifikace.časový_okamžik!.filter(it => {
+                        if (it.datum && it.datum.length > 0) {
                             const since = sub(Date.parse(it.datum), {seconds: 1});
-                            console.log(since);
                             const to = add(since, {days: 1, seconds: 1});
-                            console.log(to);
                             return isAfter(mmnt, since) && isBefore(mmnt, to);
                         } else {
                             return false;
@@ -188,13 +185,12 @@ export class CasovaSpecifikace {
         });
     }
 
-
     public presentNoEmptyArrays(): string[] {
         return Object.keys(this.casovaSpecifikace)
             .filter(key => Array.isArray(this.casovaSpecifikace[key]) && this.casovaSpecifikace[key].length > 0);
     }
 
-    hasProperty(property: Properties) {
+    hasArrayProperty(property: Properties) {
         if (property === Properties.počet_opakování) {
             return this.casovaSpecifikace[property] !== undefined;
         } else {
@@ -205,9 +201,9 @@ export class CasovaSpecifikace {
     createPattern(): Pattern {
 
         // dny v tydnu
-        if (this.hasProperty(Properties.den_v_týdnu)
-            && !this.hasProperty(Properties.frekvence)
-            && !this.hasProperty(Properties.specifická_frekvence)) {
+        if (this.hasArrayProperty(Properties.den_v_týdnu)
+            && !this.hasArrayProperty(Properties.frekvence)
+            && !this.hasArrayProperty(Properties.specifická_frekvence)) {
             const daysOfWeek: DenVTydnuType[] = this.casovaSpecifikace.den_v_týdnu || [{iri: "undefined"}];
             const pattern = new Pattern(`V těchto dnech: ${(daysOfWeek.map(data => `<${data.iri}>`).join(", "))}`);
 
@@ -218,7 +214,7 @@ export class CasovaSpecifikace {
         }
 
         // pocet opakovani
-        if (this.hasProperty(Properties.počet_opakování)) {
+        if (this.hasArrayProperty(Properties.počet_opakování)) {
             let times = `${String(this.casovaSpecifikace.počet_opakování)}×`;
             switch (this.casovaSpecifikace.počet_opakování) {
                 case 1:
@@ -238,19 +234,39 @@ export class CasovaSpecifikace {
                     break;
             }
             // TODO přidat frekvence
-            if (this.hasProperty(Properties.časový_interval)) {
+            if (this.hasArrayProperty(Properties.časový_interval)) {
                 // TODO pokracovat tu
             }
 
             return new Pattern("Opakuje se " + times);
         }
 
+
+        function getTime(casovyOkamzik: CasovyOkamzik): string {
+            if (casovyOkamzik.datum && casovyOkamzik.datum_a_čas) {
+                throw new Error("cannot set both datum and datum_a_čas");
+            } else {
+                if (casovyOkamzik.datum_a_čas) {
+                    return format(new Date(casovyOkamzik.datum_a_čas), "PPPPpppp", {locale: cs});
+                }
+                if (casovyOkamzik.datum) {
+                    return format(new Date(casovyOkamzik.datum), "PPPP", {locale: cs});
+                }
+
+                throw new Error("both  datum and datum_a_čas are empty");
+            }
+        }
+
+        // pocet opakovani
+        if (this.hasArrayProperty(Properties.časový_okamžik)) {
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            return new Pattern(`${this.casovaSpecifikace.časový_okamžik?.map(getTime).join(", ")}`);
+        }
+
         return new Pattern("Missing pattern !!!, FIXME");
 
     }
-
 }
-
 
 export class Pattern {
     pattern = "";

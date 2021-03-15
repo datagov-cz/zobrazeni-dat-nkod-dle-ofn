@@ -1,7 +1,7 @@
 import {CasovaSpecifikace, CasovaSpecifikaceType, isInSpecifications} from "../src/opennings";
 import {parse} from "date-fns";
 
-xtest("toString - days", async () => {
+xtest("toString - den_v_týdnu", async () => {
     const input: CasovaSpecifikaceType = {
         "věc": {
             "název": "testovací název",
@@ -16,7 +16,7 @@ xtest("toString - days", async () => {
     const actual = await new CasovaSpecifikace(input).toString();
     expect(actual).toEqual("Otevírací doba pro testovací název\n V těchto dnech: Pondělí, Úterý");
 })
-test("toString - opakování", async () => {
+test("toString - počet_opakování", async () => {
     const input: CasovaSpecifikaceType = {
         "věc": {
             "název": "testovací název",
@@ -27,6 +27,19 @@ test("toString - opakování", async () => {
 
     const actual = await new CasovaSpecifikace(input).toString();
     expect(actual).toEqual("Opakuje se 10×");
+})
+
+test("toString - časový_okamžik", async () => {
+    const input: CasovaSpecifikaceType = {
+        "věc": {
+            "název": "testovací název",
+            "iri": "iri-vec"
+        },
+        "časový_okamžik": [{datum: "2021-02-23"}, {datum_a_čas: "2021-02-24T14:48:00"}]
+    }
+
+    const actual = await new CasovaSpecifikace(input).toString();
+    expect(actual).toEqual("úterý, 23. února 2021, středa, 24. února 2021 v 14:48:00 GMT+01:00");
 })
 
 test("contains - dny v týdnu", () => {
